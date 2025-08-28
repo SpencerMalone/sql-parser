@@ -1,0 +1,1 @@
+SELECT * FROM orders o WHERE o.total > (SELECT AVG(total) FROM orders WHERE customer_id = o.customer_id)

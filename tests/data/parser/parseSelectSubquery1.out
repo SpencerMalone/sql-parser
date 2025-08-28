@@ -1,0 +1,500 @@
+{
+    "query": "SELECT * FROM users WHERE id IN (SELECT user_id FROM orders WHERE status = 'completed')",
+    "lexer": {
+        "@type": "PhpMyAdmin\\SqlParser\\TokensList",
+        "count": 32,
+        "idx": 32,
+        "tokens": [
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "SELECT",
+                "value": "SELECT",
+                "keyword": "SELECT",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 3,
+                "position": 0
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 6
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "*",
+                "value": "*",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Operator",
+                    "value": 2
+                },
+                "flags": 16,
+                "position": 7
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 8
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "FROM",
+                "value": "FROM",
+                "keyword": "FROM",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 3,
+                "position": 9
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 13
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "users",
+                "value": "users",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "None",
+                    "value": 0
+                },
+                "flags": 0,
+                "position": 14
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 19
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "WHERE",
+                "value": "WHERE",
+                "keyword": "WHERE",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 3,
+                "position": 20
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 25
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "id",
+                "value": "id",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "None",
+                    "value": 0
+                },
+                "flags": 0,
+                "position": 26
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 28
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "IN",
+                "value": "IN",
+                "keyword": "IN",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 35,
+                "position": 29
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 31
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "(",
+                "value": "(",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Operator",
+                    "value": 2
+                },
+                "flags": 16,
+                "position": 32
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "SELECT",
+                "value": "SELECT",
+                "keyword": "SELECT",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 3,
+                "position": 33
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 39
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "user_id",
+                "value": "user_id",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "None",
+                    "value": 0
+                },
+                "flags": 0,
+                "position": 40
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 47
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "FROM",
+                "value": "FROM",
+                "keyword": "FROM",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 3,
+                "position": 48
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 52
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "orders",
+                "value": "orders",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "None",
+                    "value": 0
+                },
+                "flags": 0,
+                "position": 53
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 59
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "WHERE",
+                "value": "WHERE",
+                "keyword": "WHERE",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 3,
+                "position": 60
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 65
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "status",
+                "value": "status",
+                "keyword": "STATUS",
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Keyword",
+                    "value": 1
+                },
+                "flags": 1,
+                "position": 66
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 72
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "=",
+                "value": "=",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Operator",
+                    "value": 2
+                },
+                "flags": 2,
+                "position": 73
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": " ",
+                "value": " ",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Whitespace",
+                    "value": 3
+                },
+                "flags": 0,
+                "position": 74
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "'completed'",
+                "value": "completed",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "String",
+                    "value": 7
+                },
+                "flags": 1,
+                "position": 75
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": ")",
+                "value": ")",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Operator",
+                    "value": 2
+                },
+                "flags": 16,
+                "position": 86
+            },
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Token",
+                "token": "",
+                "value": "",
+                "keyword": null,
+                "type": {
+                    "@type": "PhpMyAdmin\\SqlParser\\TokenType",
+                    "name": "Delimiter",
+                    "value": 9
+                },
+                "flags": 0,
+                "position": null
+            }
+        ]
+    },
+    "parser": {
+        "strict": false,
+        "errors": [],
+        "statements": [
+            {
+                "@type": "PhpMyAdmin\\SqlParser\\Statements\\SelectStatement",
+                "options": {
+                    "@type": "PhpMyAdmin\\SqlParser\\Components\\OptionsArray",
+                    "options": []
+                },
+                "first": 0,
+                "last": 30,
+                "expr": [
+                    {
+                        "@type": "PhpMyAdmin\\SqlParser\\Components\\Expression",
+                        "database": null,
+                        "table": null,
+                        "column": null,
+                        "expr": "*",
+                        "alias": null,
+                        "function": null,
+                        "subquery": null,
+                        "subqueryExpression": null
+                    }
+                ],
+                "from": [
+                    {
+                        "@type": "PhpMyAdmin\\SqlParser\\Components\\Expression",
+                        "database": null,
+                        "table": "users",
+                        "column": null,
+                        "expr": "users",
+                        "alias": null,
+                        "function": null,
+                        "subquery": null,
+                        "subqueryExpression": null
+                    }
+                ],
+                "indexHints": null,
+                "partition": null,
+                "where": [
+                    {
+                        "@type": "PhpMyAdmin\\SqlParser\\Components\\Condition",
+                        "identifiers": [
+                            "id",
+                            "user_id",
+                            "orders",
+                            "status",
+                            "completed"
+                        ],
+                        "isOperator": false,
+                        "expr": "id IN (SELECT user_id FROM orders WHERE status = 'completed')",
+                        "leftOperand": "id IN (SELECT user_id FROM orders WHERE status = 'completed')",
+                        "operator": "",
+                        "rightOperand": ""
+                    }
+                ],
+                "group": null,
+                "groupOptions": null,
+                "having": null,
+                "order": null,
+                "limit": null,
+                "procedure": null,
+                "into": null,
+                "join": null,
+                "union": [],
+                "endOptions": null
+            }
+        ]
+    },
+    "errors": {
+        "lexer": [],
+        "parser": []
+    }
+}

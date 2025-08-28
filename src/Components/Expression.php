@@ -53,6 +53,11 @@ final class Expression implements Component
     public string|null $subquery = null;
 
     /**
+     * The structured subquery expression object (enhanced subquery support).
+     */
+    public SubqueryExpression|null $subqueryExpression = null;
+
+    /**
      * Syntax:
      *     new Expression('expr')
      *     new Expression('expr', 'alias')
@@ -86,7 +91,9 @@ final class Expression implements Component
 
     public function build(): string
     {
-        if ($this->expr !== '' && $this->expr !== null) {
+        if ($this->subqueryExpression) {
+            $ret = $this->subqueryExpression->build();
+        } elseif ($this->expr !== '' && $this->expr !== null) {
             $ret = $this->expr;
         } else {
             $fields = [];
