@@ -19,7 +19,7 @@ class LoadStatementTest extends TestCase
         $this->assertTrue($stmt->options->has('CONCURRENT'));
     }
 
-    #[DataProvider('loadProvider')]
+    /** @dataProvider loadProvider **/
     public function testLoad(string $test): void
     {
         $this->runParserTest($test);

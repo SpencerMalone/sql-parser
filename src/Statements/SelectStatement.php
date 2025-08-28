@@ -250,67 +250,77 @@ class SelectStatement extends Statement
      *
      * @var IndexHint[]|null
      */
-    public array|null $indexHints = null;
+    public $indexHints = null;
 
     /**
      * Partitions used as source for this statement.
+     *
+     * @var ArrayObj|null
      */
-    public ArrayObj|null $partition = null;
+    public $partition = null;
 
     /**
      * Conditions used for filtering each row of the result set.
      *
      * @var Condition[]|null
      */
-    public array|null $where = null;
+    public $where = null;
 
     /**
      * Conditions used for grouping the result set.
      *
      * @var GroupKeyword[]|null
      */
-    public array|null $group = null;
+    public $group = null;
 
     /**
      * List of options available for the GROUP BY component.
+     *
+     * @var OptionsArray|null
      */
-    public OptionsArray|null $groupOptions = null;
+    public $groupOptions = null;
 
     /**
      * Conditions used for filtering the result set.
      *
      * @var Condition[]|null
      */
-    public array|null $having = null;
+    public $having = null;
 
     /**
      * Specifies the order of the rows in the result set.
      *
      * @var OrderKeyword[]|null
      */
-    public array|null $order = null;
+    public $order = null;
 
     /**
      * Conditions used for limiting the size of the result set.
+     *
+     * @var Limit|null
      */
-    public Limit|null $limit = null;
+    public $limit = null;
 
     /**
      * Procedure that should process the data in the result set.
+     *
+     * @var FunctionCall|null
      */
-    public FunctionCall|null $procedure = null;
+    public $procedure = null;
 
     /**
      * Destination of this result set.
+     *
+     * @var IntoKeyword|null
      */
-    public IntoKeyword|null $into = null;
+    public $into = null;
 
     /**
      * Joins.
      *
      * @var JoinKeyword[]|null
      */
-    public array|null $join = null;
+    public $join = null;
 
     /**
      * Unions.
@@ -322,9 +332,10 @@ class SelectStatement extends Statement
     /**
      * The end options of this query.
      *
+     * @var OptionsArray|null
      * @see SelectStatement::STATEMENT_END_OPTIONS
      */
-    public OptionsArray|null $endOptions = null;
+    public $endOptions = null;
 
     /**
      * Parses the statements defined by the tokens list.

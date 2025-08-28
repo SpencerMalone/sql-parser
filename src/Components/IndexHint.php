@@ -13,17 +13,41 @@ use PhpMyAdmin\SqlParser\Parsers\Expressions;
 final class IndexHint implements Component
 {
     /**
+     * @var string The type of hint (USE/FORCE/IGNORE)
+     */
+    public $type;
+
+    /**
+     * @var string What the hint is for (INDEX/KEY)
+     */
+    public $indexOrKey;
+
+    /**
+     * @var string|null The clause for which this hint is (JOIN/ORDER BY/GROUP BY)
+     */
+    public $for;
+
+    /**
+     * @var Expression[] List of indexes in this hint
+     */
+    public $indexes;
+
+    /**
      * @param string       $type       The type of hint (USE/FORCE/IGNORE)
      * @param string       $indexOrKey What the hint is for (INDEX/KEY)
      * @param string|null  $for        The clause for which this hint is (JOIN/ORDER BY/GROUP BY)
      * @param Expression[] $indexes    List of indexes in this hint
      */
     public function __construct(
-        public string $type = '',
-        public string $indexOrKey = '',
-        public string|null $for = null,
-        public array $indexes = [],
+        string $type = '',
+        string $indexOrKey = '',
+        ?string $for = null,
+        array $indexes = []
     ) {
+        $this->type = $type;
+        $this->indexOrKey = $indexOrKey;
+        $this->for = $for;
+        $this->indexes = $indexes;
     }
 
     public function build(): string

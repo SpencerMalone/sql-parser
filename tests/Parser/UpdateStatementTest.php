@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class UpdateStatementTest extends TestCase
 {
-    #[DataProvider('updateProvider')]
+    /** @dataProvider updateProvider **/
     public function testUpdate(string $test): void
     {
         $this->runParserTest($test);

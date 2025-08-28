@@ -23,7 +23,10 @@ class TruncateStatement extends Statement
     /**
      * The name of the truncated table.
      */
-    public Expression|null $table = null;
+    /**
+     * @var Expression|null
+     */
+    public $table = null;
 
     /**
      * Special build method for truncate statement as Statement::build would return empty string.

@@ -22,21 +22,19 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^7.4 || ^8.0",
         "symfony/polyfill-mbstring": "^1.24"
     },
     "require-dev": {
         "phpbench/phpbench": "^1.2",
-        "phpmyadmin/coding-standard": "^4.0",
         "phpmyadmin/motranslator": "^5.3",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
-        "phpunit/phpunit": "^11.5",
-        "psalm/plugin-phpunit": "^0.19.2",
-        "vimeo/psalm": "^6.0",
+        "phpunit/phpunit": "^9.0",
+        "rector/rector": "^2.1",
         "zumba/json-serializer": "^3.2"
     },
     "conflict": {

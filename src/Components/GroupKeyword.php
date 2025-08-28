@@ -13,15 +13,20 @@ use function trim;
  */
 final class GroupKeyword implements Component
 {
-    public OrderSortKeyword|null $type = null;
+    /**
+     * @var OrderSortKeyword|null
+     */
+    public $type = null;
 
     /**
      * The expression that is used for grouping.
+     *
+     * @var Expression|null
      */
-    public Expression|null $expr = null;
+    public $expr = null;
 
     /** @param Expression|null $expr the expression that we are sorting by */
-    public function __construct(Expression|null $expr = null)
+    public function __construct($expr = null)
     {
         $this->expr = $expr;
     }

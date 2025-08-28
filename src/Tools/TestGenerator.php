@@ -26,8 +26,6 @@ use function mkdir;
 use function print_r;
 use function scandir;
 use function sprintf;
-use function str_contains;
-use function str_ends_with;
 use function str_replace;
 use function strpos;
 use function substr;
@@ -129,13 +127,16 @@ class TestGenerator
      * @param string $debug  the debug file
      * @param bool   $ansi   activate quotes ANSI mode
      */
+    /**
+     * @return void
+     */
     public static function build(
         string $type,
         string $input,
         string $output,
-        string|null $debug = null,
-        bool $ansi = false,
-    ): void {
+        $debug = null,
+        bool $ansi = false
+    ) {
         // Support query types: `lexer` / `parser`.
         if (! in_array($type, ['lexer', 'parser'])) {
             throw new Exception('Unknown test type (expected `lexer` or `parser`).');
@@ -201,7 +202,7 @@ class TestGenerator
      * @param string $input  the input directory
      * @param string $output the output directory
      */
-    public static function buildAll(string $input, string $output, mixed $debug = null): void
+    public static function buildAll(string $input, string $output, $debug = null): void
     {
         $files = scandir($input);
 
@@ -229,7 +230,7 @@ class TestGenerator
 
                 // Generating tests recursively.
                 static::buildAll($inputFile, $outputFile, $debugFile);
-            } elseif (str_ends_with($inputFile, '.in')) {
+            } elseif (substr($inputFile, -3) === '.in') {
                 // Generating file names by replacing `.in` with `.out` and
                 // `.debug`.
                 $outputFile = substr($outputFile, 0, -3) . '.out';
@@ -241,11 +242,11 @@ class TestGenerator
                 if (! file_exists($outputFile)) {
                     echo sprintf("Building test for %s...\n", $inputFile);
                     static::build(
-                        str_contains($inputFile, 'lex') ? 'lexer' : 'parser',
+                        strpos($inputFile, 'lex') !== false ? 'lexer' : 'parser',
                         $inputFile,
                         $outputFile,
                         $debugFile,
-                        str_contains($inputFile, 'ansi'),
+                        strpos($inputFile, 'ansi') !== false,
                     );
                 } else {
                     echo sprintf("Test for %s already built!\n", $inputFile);

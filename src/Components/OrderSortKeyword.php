@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Components;
 
-enum OrderSortKeyword: string
+class OrderSortKeyword
 {
-    case Asc = 'ASC';
-    case Desc = 'DESC';
+    public const Asc = 'ASC';
+    public const Desc = 'DESC';
 }

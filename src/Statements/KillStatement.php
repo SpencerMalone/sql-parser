@@ -39,7 +39,10 @@ class KillStatement extends Statement
     /**
      * Holds the identifier if explicitly set
      */
-    public Statement|int|null $identifier = null;
+    /**
+     * @var Statement|int|null
+     */
+    public $identifier = null;
 
     /**
      * Whether MariaDB ID keyword is used or not.

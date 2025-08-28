@@ -20,12 +20,12 @@ class BufferedQueryTest extends TestCase
      * @psalm-param array{delimiter?: non-empty-string, parse_delimiter?: bool, add_delimiter?: bool} $options
      * @psalm-param positive-int $chunkSize
      */
-    #[DataProvider('extractProvider')]
+    /** @dataProvider extractProvider **/
     public function testExtract(
         string $query,
         int $chunkSize,
         array $options,
-        array $expected,
+        array $expected
     ): void {
         $chunks = str_split($query, $chunkSize);
         $count = count($chunks);

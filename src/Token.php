@@ -66,42 +66,57 @@ class Token
     /**
      * The token it its raw string representation.
      */
-    public string $token;
+    /**
+     * The token in its raw string representation.
+     *
+     * @var string
+     */
+    public $token;
 
     /**
      * The value this token contains (i.e. token after some evaluation).
+     *
+     * @var bool|float|int|string
      */
-    public bool|float|int|string $value;
+    public $value;
 
     /**
      * The keyword value this token contains, always uppercase.
+     *
+     * @var string|null
      */
-    public string|null $keyword = null;
+    public $keyword = null;
 
     /**
      * The type of this token.
+     *
+     * @var int
      */
-    public TokenType $type;
+    public $type;
 
     /**
      * The flags of this token.
+     *
+     * @var int
      */
-    public int $flags;
+    public $flags;
 
     /**
      * The position in the initial string where this token started.
      *
      * The position is counted in chars, not bytes, so you should
      * use mb_* functions to properly handle utf-8 multibyte chars.
+     *
+     * @var int|null
      */
-    public int|null $position = null;
+    public $position = null;
 
     /**
-     * @param string    $token the value of the token
-     * @param TokenType $type  the type of the token
-     * @param int       $flags the flags of the token
+     * @param string $token the value of the token
+     * @param int    $type  the type of the token
+     * @param int    $flags the flags of the token
      */
-    public function __construct(string $token, TokenType $type = TokenType::None, int $flags = self::FLAG_NONE)
+    public function __construct($token, $type = TokenType::None, $flags = self::FLAG_NONE)
     {
         $this->token = $token;
         $this->type = $type;
@@ -114,7 +129,14 @@ class Token
      *
      * If no processing can be done it will return the initial string.
      */
-    public function extract(): bool|float|int|string
+    /**
+     * Does a little processing to the token to extract a value.
+     *
+     * If no processing can be done it will return the initial string.
+     *
+     * @return bool|float|int|string
+     */
+    public function extract()
     {
         switch ($this->type) {
             case TokenType::Keyword:

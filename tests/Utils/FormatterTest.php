@@ -19,7 +19,7 @@ class FormatterTest extends TestCase
      * @psalm-param list<array{type?: int, flags?: int, html?: string, cli?: string, function?: string}> $overriding
      * @psalm-param list<array{type: int, flags: int, html: string, cli: string, function?: string}> $expected
      */
-    #[DataProvider('mergeFormatsProvider')]
+    /** @dataProvider mergeFormatsProvider **/
     public function testMergeFormats(array $default, array $overriding, array $expected): void
     {
         $formatter = $this->createPartialMock(Formatter::class, ['getDefaultOptions', 'getDefaultFormats']);
@@ -54,6 +54,7 @@ class FormatterTest extends TestCase
         ];
 
         $reflectionMethod = new ReflectionMethod($formatter, 'getMergedOptions');
+        $reflectionMethod->setAccessible(true);
         $this->assertEquals($expectedOptions, $reflectionMethod->invoke($formatter, $overridingOptions));
     }
 
@@ -243,7 +244,7 @@ class FormatterTest extends TestCase
     }
 
     /** @param array<string, bool> $options */
-    #[DataProvider('formatQueriesProviders')]
+    /** @dataProvider formatQueriesProviders **/
     public function testFormat(string $query, string $text, string $cli, string $html, array $options = []): void
     {
         // Test TEXT format

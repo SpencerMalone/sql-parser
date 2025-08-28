@@ -57,14 +57,20 @@ class ReplaceStatement extends Statement
     /**
      * Tables used as target for this statement.
      */
-    public IntoKeyword|null $into = null;
+    /**
+     * @var IntoKeyword|null
+     */
+    public $into = null;
 
     /**
      * Values to be replaced.
      *
      * @var ArrayObj[]|null
      */
-    public array|null $values = null;
+    /**
+     * @var array|null
+     */
+    public $values = null;
 
     /**
      * If SET clause is present
@@ -72,13 +78,19 @@ class ReplaceStatement extends Statement
      *
      * @var SetOperation[]|null
      */
-    public array|null $set = null;
+    /**
+     * @var array|null
+     */
+    public $set = null;
 
     /**
      * If SELECT clause is present
      * holds the SelectStatement.
      */
-    public SelectStatement|null $select = null;
+    /**
+     * @var SelectStatement|null
+     */
+    public $select = null;
 
     public function build(): string
     {

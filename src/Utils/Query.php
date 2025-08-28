@@ -141,8 +141,10 @@ class Query
      * Gets an array with flags this statement has.
      *
      * @param Statement|null $statement the statement to be processed
+     *
+     * @return StatementFlags
      */
-    public static function getFlags(Statement|null $statement): StatementFlags
+    public static function getFlags($statement)
     {
         $flags = new StatementFlags();
 
@@ -378,8 +380,8 @@ class Query
         Statement $statement,
         TokensList $list,
         string $clause,
-        int|string $type = 0,
-        bool $skipFirst = true,
+        $type = 0,
+        bool $skipFirst = true
     ): string {
         /**
          * The index of the current clause.
@@ -525,8 +527,8 @@ class Query
         Statement $statement,
         TokensList $list,
         string $old,
-        string|null $new = null,
-        bool $onlyType = false,
+        $new = null,
+        bool $onlyType = false
     ): string {
         // TODO: Update the tokens list and the statement.
 
@@ -598,7 +600,13 @@ class Query
      *                                 the remaining part of the query and the last delimiter
      * @psalm-return array{string|null, string, string|null}
      */
-    public static function getFirstStatement(string $query, string|null $delimiter = null): array
+    /**
+     * @param string      $query
+     * @param string|null $delimiter
+     *
+     * @return array
+     */
+    public static function getFirstStatement(string $query, $delimiter = null)
     {
         $lexer = new Lexer($query, false, $delimiter);
         $list = $lexer->list;

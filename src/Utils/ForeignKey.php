@@ -7,17 +7,64 @@ namespace PhpMyAdmin\SqlParser\Utils;
 final class ForeignKey
 {
     /**
-     * @param string[] $indexList
-     * @param string[] $refIndexList
+     * @var string|null
+     */
+    public $constraint;
+
+    /**
+     * @var string[]
+     */
+    public $indexList;
+
+    /**
+     * @var string|null
+     */
+    public $refDbName;
+
+    /**
+     * @var string|null
+     */
+    public $refTableName;
+
+    /**
+     * @var string[]
+     */
+    public $refIndexList;
+
+    /**
+     * @var string|null
+     */
+    public $onUpdate;
+
+    /**
+     * @var string|null
+     */
+    public $onDelete;
+
+    /**
+     * @param string|null $constraint
+     * @param string[]    $indexList
+     * @param string|null $refDbName
+     * @param string|null $refTableName
+     * @param string[]    $refIndexList
+     * @param string|null $onUpdate
+     * @param string|null $onDelete
      */
     public function __construct(
-        public string|null $constraint = null,
-        public array $indexList = [],
-        public string|null $refDbName = null,
-        public string|null $refTableName = null,
-        public array $refIndexList = [],
-        public string|null $onUpdate = null,
-        public string|null $onDelete = null,
+        ?string $constraint = null,
+        array $indexList = [],
+        ?string $refDbName = null,
+        ?string $refTableName = null,
+        array $refIndexList = [],
+        ?string $onUpdate = null,
+        ?string $onDelete = null
     ) {
+        $this->constraint = $constraint;
+        $this->indexList = $indexList;
+        $this->refDbName = $refDbName;
+        $this->refTableName = $refTableName;
+        $this->refIndexList = $refIndexList;
+        $this->onUpdate = $onUpdate;
+        $this->onDelete = $onDelete;
     }
 }

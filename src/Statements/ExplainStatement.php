@@ -34,7 +34,10 @@ class ExplainStatement extends Statement
     /**
      * The parser of the statement to be explained
      */
-    public Parser|null $bodyParser = null;
+    /**
+     * @var Parser|null
+     */
+    public $bodyParser = null;
 
     /**
      * The statement alias, could be any of the following:
@@ -47,22 +50,34 @@ class ExplainStatement extends Statement
     /**
      * The connection identifier, if used.
      */
-    public int|null $connectionId = null;
+    /**
+     * @var int|null
+     */
+    public $connectionId = null;
 
     /**
      * The explained database for the table's name, if used.
      */
-    public string|null $explainedDatabase = null;
+    /**
+     * @var string|null
+     */
+    public $explainedDatabase = null;
 
     /**
      * The explained table's name, if used.
      */
-    public string|null $explainedTable = null;
+    /**
+     * @var string|null
+     */
+    public $explainedTable = null;
 
     /**
      * The explained column's name, if used.
      */
-    public string|null $explainedColumn = null;
+    /**
+     * @var string|null
+     */
+    public $explainedColumn = null;
 
     /**
      * @param Parser     $parser the instance that requests parsing

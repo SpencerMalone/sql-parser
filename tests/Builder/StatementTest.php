@@ -48,7 +48,7 @@ class StatementTest extends TestCase
      *   tables: array<string, array{alias: (string|null), columns: array<string, string>}>
      * }> $expected
      */
-    #[DataProvider('getAliasesProvider')]
+    /** @dataProvider getAliasesProvider **/
     public function testGetAliases(string $query, string $db, array $expected): void
     {
         $parser = new Parser($query);

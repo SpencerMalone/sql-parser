@@ -21,7 +21,7 @@ use function preg_match;
 use function scandir;
 use function sort;
 use function sprintf;
-use function str_contains;
+use function strpos;
 use function str_replace;
 use function str_split;
 use function strlen;
@@ -197,7 +197,7 @@ PHP;
 
             // Reserved, data types, keys, functions, etc. keywords.
             foreach (static::$labelsFlags as $label => $flags) {
-                if (! str_contains($value, $label)) {
+                if (strpos($value, $label) === false) {
                     continue;
                 }
 
@@ -206,7 +206,7 @@ PHP;
             }
 
             // Composed keyword.
-            if (str_contains($value, ' ')) {
+            if (strpos($value, ' ') !== false) {
                 $type |= Token::FLAG_KEYWORD_RESERVED;
                 $type |= Token::FLAG_KEYWORD_COMPOSED;
             }

@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class TableTest extends TestCase
 {
     /** @param list<ForeignKey> $expected */
-    #[DataProvider('getForeignKeysProvider')]
+    /** @dataProvider getForeignKeysProvider **/
     public function testGetForeignKeys(string $query, array $expected): void
     {
         $parser = new Parser($query);
@@ -53,28 +53,9 @@ class TableTest extends TestCase
                       REFERENCES `staff` (`staff_id`) ON UPDATE CASCADE
                 ) ENGINE=InnoDB AUTO_INCREMENT=16050 DEFAULT CHARSET=utf8',
                 [
-                    new ForeignKey(
-                        constraint: 'fk_payment_customer',
-                        indexList: ['customer_id'],
-                        refTableName: 'customer',
-                        refIndexList: ['customer_id'],
-                        onUpdate: 'CASCADE',
-                    ),
-                    new ForeignKey(
-                        constraint: 'fk_payment_rental',
-                        indexList: ['rental_id'],
-                        refTableName: 'rental',
-                        refIndexList: ['rental_id'],
-                        onDelete: 'SET_NULL',
-                        onUpdate: 'CASCADE',
-                    ),
-                    new ForeignKey(
-                        constraint: 'fk_payment_staff',
-                        indexList: ['staff_id'],
-                        refTableName: 'staff',
-                        refIndexList: ['staff_id'],
-                        onUpdate: 'CASCADE',
-                    ),
+                    new ForeignKey('fk_payment_customer', ['customer_id'], null, 'customer', ['customer_id'], 'CASCADE'),
+                    new ForeignKey('fk_payment_rental', ['rental_id'], null, 'rental', ['rental_id'], 'CASCADE', 'SET_NULL'),
+                    new ForeignKey('fk_payment_staff', ['staff_id'], null, 'staff', ['staff_id'], 'CASCADE'),
                 ],
             ],
             [
@@ -103,13 +84,7 @@ class TableTest extends TestCase
                   CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON UPDATE CASCADE
                 ) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8',
                 [
-                    new ForeignKey(
-                        constraint: 'fk_address_city',
-                        indexList: ['city_id'],
-                        refTableName: 'city',
-                        refIndexList: ['city_id'],
-                        onUpdate: 'CASCADE',
-                    ),
+                    new ForeignKey('fk_address_city', ['city_id'], null, 'city', ['city_id'], 'CASCADE'),
                 ],
             ],
         ];
@@ -126,7 +101,7 @@ class TableTest extends TestCase
      *   expr?: string
      * }> $expected
      */
-    #[DataProvider('getFieldsProvider')]
+    /** @dataProvider getFieldsProvider **/
     public function testGetFields(string $query, array $expected): void
     {
         $parser = new Parser($query);

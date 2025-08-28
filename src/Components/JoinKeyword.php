@@ -41,24 +41,36 @@ final class JoinKeyword implements Component
      *
      * @see JoinKeyword::JOINS
      */
-    public string|null $type = null;
+    /**
+     * @var string|null
+     */
+    public $type = null;
 
     /**
      * Join expression.
      */
-    public Expression|null $expr = null;
+    /**
+     * @var Expression|null
+     */
+    public $expr = null;
 
     /**
      * Join conditions.
      *
      * @var Condition[]|null
      */
-    public array|null $on = null;
+    /**
+     * @var array|null
+     */
+    public $on = null;
 
     /**
      * Columns in Using clause.
      */
-    public ArrayObj|null $using = null;
+    /**
+     * @var ArrayObj|null
+     */
+    public $using = null;
 
     /**
      * Index hints
@@ -77,11 +89,11 @@ final class JoinKeyword implements Component
      * @param IndexHint[]      $indexHints index hints
      */
     public function __construct(
-        string|null $type = null,
-        Expression|null $expr = null,
-        array|null $on = null,
-        ArrayObj|null $using = null,
-        array $indexHints = [],
+        $type = null,
+        $expr = null,
+        $on = null,
+        $using = null,
+        array $indexHints = []
     ) {
         $this->type = $type;
         $this->expr = $expr;

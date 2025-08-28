@@ -62,7 +62,10 @@ final class WithStatement extends Statement
     /**
      * holds the CTE parser.
      */
-    public Parser|null $cteStatementParser = null;
+    /**
+     * @var Parser|null
+     */
+    public $cteStatementParser = null;
 
     /**
      * @param Parser     $parser the instance that requests parsing
@@ -289,8 +292,10 @@ final class WithStatement extends Statement
 
     /**
      * Get tokens within the WITH expression to use them in another parser
+     *
+     * @return ParserException|TokensList
      */
-    private function getSubTokenList(TokensList $list): ParserException|TokensList
+    private function getSubTokenList(TokensList $list)
     {
         $idx = $list->idx;
         $token = $list->tokens[$list->idx];

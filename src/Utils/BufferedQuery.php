@@ -61,8 +61,10 @@ class BufferedQuery
 
     /**
      * The current status of the parser.
+     *
+     * @var int|null
      */
-    public int|null $status = null;
+    public $status = null;
 
     /**
      * The last incomplete query that was extracted.
@@ -108,8 +110,10 @@ class BufferedQuery
      * Extracts a statement from the buffer.
      *
      * @param bool $end whether the end of the buffer was reached
+     *
+     * @return string|false
      */
-    public function extract(bool $end = false): string|false
+    public function extract(bool $end = false)
     {
         /**
          * The last parsed position.

@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser;
 
-enum TokenType: int
+class TokenType
 {
     /**
      * This type is used when the token is invalid or its type cannot be
      * determined because of the ambiguous context. Further analysis might be
      * required to detect its type.
      */
-    case None = 0;
+    public const None = 0;
 
     /**
      * SQL specific keywords: SELECT, UPDATE, INSERT, etc.
      */
-    case Keyword = 1;
+    public const Keyword = 1;
 
     /**
      * Any type of legal operator.
@@ -28,12 +28,12 @@ enum TokenType: int
      * SQL specific operators: . (e.g. .. WHERE database.table ..),
      *                         * (e.g. SELECT * FROM ..)
      */
-    case Operator = 2;
+    public const Operator = 2;
 
     /**
      * Spaces, tabs, new lines, etc.
      */
-    case Whitespace = 3;
+    public const Whitespace = 3;
 
     /**
      * Any type of legal comment.
@@ -53,35 +53,35 @@ enum TokenType: int
      *
      * Backslashes were added to respect PHP's comments syntax.
      */
-    case Comment = 4;
+    public const Comment = 4;
 
     /**
      * Boolean values: true or false.
      */
-    case Bool = 5;
+    public const Bool = 5;
 
     /**
      * Numbers: 4, 0x8, 15.16, 23e42, etc.
      */
-    case Number = 6;
+    public const Number = 6;
 
     /**
      * Literal strings: 'string', "test".
      * Some of these strings are actually symbols.
      */
-    case String = 7;
+    public const String = 7;
 
     /**
      * Database, table names, variables, etc.
      * For example: ```SELECT `foo`, `bar` FROM `database`.`table`;```.
      */
-    case Symbol = 8;
+    public const Symbol = 8;
 
     /**
      * Delimits an unknown string.
      * For example: ```SELECT * FROM test;```, `test` is a delimiter.
      */
-    case Delimiter = 9;
+    public const Delimiter = 9;
 
     /**
      * Labels in LOOP statement, ITERATE statement etc.
@@ -91,5 +91,5 @@ enum TokenType: int
      *  begin_label: REPEAT [statement_list] ... END REPEAT [end_label]
      *  begin_label: WHILE ... DO [statement_list] END WHILE [end_label].
      */
-    case Label = 10;
+    public const Label = 10;
 }

@@ -300,7 +300,7 @@ class CreateStatementTest extends TestCase
         ];
     }
 
-    #[DataProvider('partitionQueriesProvider')]
+    /** @dataProvider partitionQueriesProvider **/
     public function testBuilderPartitionsEngine(string $query): void
     {
         $parser = new Parser($query);

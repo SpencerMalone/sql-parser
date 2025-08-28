@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ExplainStatementTest extends TestCase
 {
-    #[DataProvider('explainProvider')]
+    /** @dataProvider explainProvider **/
     public function testExplain(string $test): void
     {
         $this->runParserTest($test);

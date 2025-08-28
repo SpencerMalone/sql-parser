@@ -23,7 +23,10 @@ class CallStatement extends Statement
     /**
      * The name of the function and its parameters.
      */
-    public FunctionCall|null $call = null;
+    /**
+     * @var FunctionCall|null
+     */
+    public $call = null;
 
     /**
      * Build statement for CALL.

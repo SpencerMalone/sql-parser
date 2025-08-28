@@ -183,7 +183,7 @@ class AlterStatementTest extends TestCase
         yield 'Mixed RENAME table + RENAME INDEX + RENAME COLUMNS' => [$query];
     }
 
-    #[DataProvider('provideBuilderForRenameColumn')]
+    /** @dataProvider provideBuilderForRenameColumn **/
     public function testBuilderRenameColumn(string $query): void
     {
         $parser = new Parser($query);
@@ -243,7 +243,7 @@ class AlterStatementTest extends TestCase
         yield 'Procedure with all remaining options #2' => [$query];
     }
 
-    #[DataProvider('provideBuilderForAlterRoutine')]
+    /** @dataProvider provideBuilderForAlterRoutine **/
     public function testBuilderForAlterRoutine(string $query): void
     {
         $parser = new Parser($query);

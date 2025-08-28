@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class CallStatementTest extends TestCase
 {
-    #[DataProvider('callProvider')]
+    /** @dataProvider callProvider **/
     public function testCall(string $test): void
     {
         $this->runParserTest($test);

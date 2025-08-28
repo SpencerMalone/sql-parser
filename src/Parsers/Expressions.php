@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser\Parsers;
 
-use AllowDynamicProperties;
 use PhpMyAdmin\SqlParser\Components\Expression;
 use PhpMyAdmin\SqlParser\Exceptions\ParserException;
 use PhpMyAdmin\SqlParser\Parseable;
@@ -23,9 +22,10 @@ use function trim;
 /**
  * Parses a reference to an expression (column, table or database name, function
  * call, mathematical expression, etc.).
+ *
+ * @final
  */
-#[AllowDynamicProperties]
-final class Expressions implements Parseable
+class Expressions implements Parseable
 {
     /**
      * List of allowed reserved keywords in expressions.
@@ -79,9 +79,11 @@ final class Expressions implements Parseable
      * @param TokensList           $list    the list of tokens that are being parsed
      * @param array<string, mixed> $options parameters for parsing
      *
+     * @return Expression|null
+     *
      * @throws ParserException
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = []): Expression|null
+    public static function parse(Parser $parser, TokensList $list, array $options = [])
     {
         $ret = new Expression();
 

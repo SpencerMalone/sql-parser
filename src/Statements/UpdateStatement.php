@@ -102,40 +102,42 @@ class UpdateStatement extends Statement
      *
      * @var Expression[]|null
      */
-    public array|null $tables = null;
+    public $tables = null;
 
     /**
      * The updated values.
      *
      * @var SetOperation[]|null
      */
-    public array|null $set = null;
+    public $set = null;
 
     /**
      * Conditions used for filtering each row of the result set.
      *
      * @var Condition[]|null
      */
-    public array|null $where = null;
+    public $where = null;
 
     /**
      * Specifies the order of the rows in the result set.
      *
      * @var OrderKeyword[]|null
      */
-    public array|null $order = null;
+    public $order = null;
 
     /**
      * Conditions used for limiting the size of the result set.
+     *
+     * @var Limit|null
      */
-    public Limit|null $limit = null;
+    public $limit = null;
 
     /**
      * Joins.
      *
      * @var JoinKeyword[]|null
      */
-    public array|null $join = null;
+    public $join = null;
 
     /**
      * Function called after the token was processed.

@@ -17,8 +17,10 @@ final class DataType implements Component
 {
     /**
      * The name of the data type.
+     *
+     * @var string|null
      */
-    public string|null $name = null;
+    public $name = null;
 
     /**
      * The parameters of this data type.
@@ -37,8 +39,10 @@ final class DataType implements Component
 
     /**
      * The options of this data type.
+     *
+     * @var OptionsArray|null
      */
-    public OptionsArray|null $options = null;
+    public $options = null;
 
     public bool $lowercase = false;
 
@@ -48,9 +52,9 @@ final class DataType implements Component
      * @param OptionsArray|null $options    the options of this data type
      */
     public function __construct(
-        string|null $name = null,
+        $name = null,
         array $parameters = [],
-        OptionsArray|null $options = null,
+        $options = null
     ) {
         $this->name = $name;
         $this->parameters = $parameters;

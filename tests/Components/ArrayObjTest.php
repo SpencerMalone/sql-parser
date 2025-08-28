@@ -43,7 +43,7 @@ class ArrayObjTest extends TestCase
         $this->assertEquals('3 + 4', $components[1]->expr);
     }
 
-    #[DataProvider('parseProvider')]
+    /** @dataProvider parseProvider **/
     public function testParse(string $test): void
     {
         $this->runParserTest($test);

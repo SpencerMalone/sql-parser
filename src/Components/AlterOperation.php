@@ -18,20 +18,27 @@ final class AlterOperation implements Component
 {
     /**
      * Options of this operation.
+     * @var OptionsArray|null
      */
-    public OptionsArray|null $options = null;
+    public $options = null;
 
     /**
      * The altered field.
+     * @var Expression|string|null
      */
-    public Expression|string|null $field = null;
+    public $field = null;
 
     /**
      * The partitions.
      *
      * @var PartitionDefinition[]|null
      */
-    public array|null $partitions = null;
+    public ?array $partitions = null;
+
+    /**
+     * @var Token[]
+     */
+    public $unknown;
 
     /**
      * @param OptionsArray|null          $options    options of alter operation
@@ -40,10 +47,10 @@ final class AlterOperation implements Component
      * @param Token[]                    $unknown    unparsed tokens found at the end of operation
      */
     public function __construct(
-        OptionsArray|null $options = null,
-        Expression|string|null $field = null,
-        array|null $partitions = null,
-        public array $unknown = [],
+        ?OptionsArray $options = null,
+        $field = null,
+        ?array $partitions = null,
+        array $unknown = []
     ) {
         $this->partitions = $partitions;
         $this->options = $options;

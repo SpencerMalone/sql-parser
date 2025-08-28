@@ -110,52 +110,58 @@ class DeleteStatement extends Statement
      *
      * @var Expression[]|null
      */
-    public array|null $from = null;
+    public $from = null;
 
     /**
      * Joins.
      *
      * @var JoinKeyword[]|null
      */
-    public array|null $join = null;
+    public $join = null;
 
     /**
      * Tables used as sources for this statement.
      *
      * @var Expression[]|null
      */
-    public array|null $using = null;
+    public $using = null;
 
     /**
      * Columns used in this statement.
      *
      * @var Expression[]|null
      */
-    public array|null $columns = null;
+    public $columns = null;
 
     /**
      * Partitions used as source for this statement.
      */
-    public ArrayObj|null $partition = null;
+    /**
+     * @var ArrayObj|null
+     */
+    public $partition = null;
 
     /**
      * Conditions used for filtering each row of the result set.
      *
      * @var Condition[]|null
      */
-    public array|null $where = null;
+    public $where = null;
 
     /**
      * Specifies the order of the rows in the result set.
      *
      * @var OrderKeyword[]|null
      */
-    public array|null $order = null;
+    public $order = null;
 
     /**
      * Conditions used for limiting the size of the result set.
      */
-    public Limit|null $limit = null;
+    /**
+     * @var Limit|null
+     */
+    public $limit = null;
 
     public function build(): string
     {

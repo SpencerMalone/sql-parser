@@ -133,8 +133,10 @@ final class StatementFlags
 
     /**
      * The type of the statement (which is usually the first keyword).
+     *
+     * @var StatementType|null
      */
-    public StatementType|null $queryType = null;
+    public $queryType = null;
 
     /**
      * Whether a page reload is required.

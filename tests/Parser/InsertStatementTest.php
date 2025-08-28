@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class InsertStatementTest extends TestCase
 {
-    #[DataProvider('insertProvider')]
+    /** @dataProvider insertProvider **/
     public function testInsert(string $test): void
     {
         $this->runParserTest($test);

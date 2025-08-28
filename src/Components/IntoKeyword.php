@@ -54,45 +54,66 @@ final class IntoKeyword implements Component
     /**
      * Type of target (OUTFILE or SYMBOL).
      */
-    public string|null $type = null;
+    /**
+     * @var string|null
+     */
+    public $type = null;
 
     /**
      * The destination, which can be a table or a file.
      */
-    public string|Expression|null $dest = null;
+    /**
+     * @var string|Expression|null
+     */
+    public $dest = null;
 
     /**
      * The name of the columns.
      *
      * @var string[]|null
      */
-    public array|null $columns = null;
+    /**
+     * @var array|null
+     */
+    public $columns = null;
 
     /**
      * The values to be selected into (SELECT .. INTO @var1).
      *
      * @var Expression[]|null
      */
-    public array|null $values = null;
+    /**
+     * @var array|null
+     */
+    public $values = null;
 
     /**
      * Options for FIELDS/COLUMNS keyword.
      *
      * @see IntoKeyword::STATEMENT_FIELDS_OPTIONS
      */
-    public OptionsArray|null $fieldsOptions = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $fieldsOptions = null;
 
     /**
      * Whether to use `FIELDS` or `COLUMNS` while building.
      */
-    public bool|null $fieldsKeyword = null;
+    /**
+     * @var bool|null
+     */
+    public $fieldsKeyword = null;
 
     /**
      * Options for OPTIONS keyword.
      *
      * @see IntoKeyword::STATEMENT_LINES_OPTIONS
      */
-    public OptionsArray|null $linesOptions = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $linesOptions = null;
 
     /**
      * @param string|null            $type          type of destination (may be OUTFILE)
@@ -103,12 +124,12 @@ final class IntoKeyword implements Component
      * @param bool|null              $fieldsKeyword options for OPTIONS keyword
      */
     public function __construct(
-        string|null $type = null,
-        string|Expression|null $dest = null,
-        array|null $columns = null,
-        array|null $values = null,
-        OptionsArray|null $fieldsOptions = null,
-        bool|null $fieldsKeyword = null,
+        $type = null,
+        $dest = null,
+        $columns = null,
+        $values = null,
+        $fieldsOptions = null,
+        $fieldsKeyword = null
     ) {
         $this->type = $type;
         $this->dest = $dest;
@@ -152,13 +173,13 @@ final class IntoKeyword implements Component
 
         $ret = 'OUTFILE "' . $this->dest . '"';
 
-        $fieldsOptionsString = $this->fieldsOptions?->build() ?? '';
+        $fieldsOptionsString = $this->fieldsOptions !== null ? $this->fieldsOptions->build() : '';
         if (trim($fieldsOptionsString) !== '') {
             $ret .= $this->fieldsKeyword ? ' FIELDS' : ' COLUMNS';
             $ret .= ' ' . $fieldsOptionsString;
         }
 
-        $linesOptionsString = $this->linesOptions?->build() ?? '';
+        $linesOptionsString = $this->linesOptions !== null ? $this->linesOptions->build() : '';
         if (trim($linesOptionsString) !== '') {
             $ret .= ' LINES ' . $linesOptionsString;
         }

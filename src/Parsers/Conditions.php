@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpMyAdmin\SqlParser\Parsers;
 
 use PhpMyAdmin\SqlParser\Components\Condition;
+use PhpMyAdmin\SqlParser\Components\Expression;
 use PhpMyAdmin\SqlParser\Parseable;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Token;
@@ -13,6 +14,9 @@ use PhpMyAdmin\SqlParser\TokenType;
 
 use function implode;
 use function in_array;
+use function strlen;
+use function strpos;
+use function substr;
 use function trim;
 
 /**
@@ -217,6 +221,10 @@ final class Conditions implements Parseable
         if ($expr->expr !== '') {
             $expr->leftOperand = trim($expr->leftOperand);
             $expr->rightOperand = trim($expr->rightOperand);
+            
+            // Check if the condition contains subqueries and parse them
+            self::parseSubqueries($parser, $expr);
+            
             $ret[] = $expr;
         }
 
@@ -229,5 +237,78 @@ final class Conditions implements Parseable
     public static function buildAll(array $component): string
     {
         return implode(' ', $component);
+    }
+
+    /**
+     * Parses subqueries within a condition and stores them as structured components.
+     *
+     * @param Parser    $parser the parser context
+     * @param Condition $condition the condition to analyze for subqueries
+     */
+    private static function parseSubqueries(Parser $parser, Condition $condition): void
+    {
+        // Look for subquery patterns in the expression
+        $expr = $condition->expr;
+        
+        // Find all subquery patterns: (SELECT ...)
+        if (strpos($expr, '(SELECT') !== false) {
+            $components = [];
+            $lastPos = 0;
+            
+            // Find each subquery
+            $pos = strpos($expr, '(SELECT', $lastPos);
+            while ($pos !== false) {
+                // Add text before the subquery as an Expression component
+                if ($pos > $lastPos) {
+                    $beforeText = substr($expr, $lastPos, $pos - $lastPos);
+                    $components[] = new Expression($beforeText);
+                }
+                
+                // Find the matching closing parenthesis
+                $depth = 0;
+                $end = $pos;
+                
+                for ($i = $pos; $i < strlen($expr); $i++) {
+                    if ($expr[$i] === '(') $depth++;
+                    if ($expr[$i] === ')') $depth--;
+                    if ($depth === 0) {
+                        $end = $i + 1;
+                        break;
+                    }
+                }
+                
+                // Extract and parse the subquery
+                $subquerySql = substr($expr, $pos, $end - $pos);
+                $lexer = new \PhpMyAdmin\SqlParser\Lexer($subquerySql);
+                $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
+                
+                $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
+                
+                if ($subquery) {
+                    $components[] = $subquery;
+                } else {
+                    // If parsing fails, keep as text
+                    $components[] = new Expression($subquerySql);
+                }
+                
+                // Copy any errors from subquery parser
+                $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
+                
+                // Move to next potential subquery
+                $lastPos = $end;
+                $pos = strpos($expr, '(SELECT', $lastPos);
+            }
+            
+            // Add any remaining text
+            if ($lastPos < strlen($expr)) {
+                $remainingText = substr($expr, $lastPos);
+                $components[] = new Expression($remainingText);
+            }
+            
+            // Store the components if we found any subqueries
+            if (count($components) > 1) { // More than one component means we found subqueries
+                $condition->components = $components;
+            }
+        }
     }
 }

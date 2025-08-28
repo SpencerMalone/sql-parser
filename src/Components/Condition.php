@@ -31,14 +31,29 @@ final class Condition implements Component
     public string $operator = '';
     public string $rightOperand = '';
 
-    /** @param string $expr the condition or the operator */
-    public function __construct(string|null $expr = null)
+    /**
+     * Parsed components of the condition (expressions, subqueries, etc.).
+     *
+     * @var Component[]|null
+     */
+    public $components = null;
+
+    /** @param string|null $expr the condition or the operator */
+    public function __construct($expr = null)
     {
         $this->expr = trim((string) $expr);
     }
 
     public function build(): string
     {
+        if ($this->components !== null) {
+            $result = '';
+            foreach ($this->components as $component) {
+                $result .= $component->build();
+            }
+            return $result;
+        }
+        
         return $this->expr;
     }
 

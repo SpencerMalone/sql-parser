@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class PurgeStatementTest extends TestCase
 {
-    #[DataProvider('purgeProvider')]
+    /** @dataProvider purgeProvider **/
     public function testPurge(string $test): void
     {
         $this->runParserTest($test);

@@ -17,7 +17,7 @@ use function end;
 use function htmlspecialchars;
 use function in_array;
 use function mb_strlen;
-use function str_contains;
+use function strpos;
 use function str_repeat;
 use function str_replace;
 use function strtoupper;
@@ -204,56 +204,56 @@ class Formatter
     {
         return [
             [
-                'type' => TokenType::Keyword->value,
+                'type' => TokenType::Keyword,
                 'flags' => Token::FLAG_KEYWORD_RESERVED,
                 'html' => 'class="sql-reserved"',
                 'cli' => "\x1b[35m",
                 'function' => 'strtoupper',
             ],
             [
-                'type' => TokenType::Keyword->value,
+                'type' => TokenType::Keyword,
                 'flags' => 0,
                 'html' => 'class="sql-keyword"',
                 'cli' => "\x1b[95m",
                 'function' => 'strtoupper',
             ],
             [
-                'type' => TokenType::Comment->value,
+                'type' => TokenType::Comment,
                 'flags' => 0,
                 'html' => 'class="sql-comment"',
                 'cli' => "\x1b[37m",
                 'function' => '',
             ],
             [
-                'type' => TokenType::Bool->value,
+                'type' => TokenType::Bool,
                 'flags' => 0,
                 'html' => 'class="sql-atom"',
                 'cli' => "\x1b[36m",
                 'function' => 'strtoupper',
             ],
             [
-                'type' => TokenType::Number->value,
+                'type' => TokenType::Number,
                 'flags' => 0,
                 'html' => 'class="sql-number"',
                 'cli' => "\x1b[92m",
                 'function' => 'strtolower',
             ],
             [
-                'type' => TokenType::String->value,
+                'type' => TokenType::String,
                 'flags' => 0,
                 'html' => 'class="sql-string"',
                 'cli' => "\x1b[91m",
                 'function' => '',
             ],
             [
-                'type' => TokenType::Symbol->value,
+                'type' => TokenType::Symbol,
                 'flags' => Token::FLAG_SYMBOL_PARAMETER,
                 'html' => 'class="sql-parameter"',
                 'cli' => "\x1b[31m",
                 'function' => '',
             ],
             [
-                'type' => TokenType::Symbol->value,
+                'type' => TokenType::Symbol,
                 'flags' => 0,
                 'html' => 'class="sql-variable"',
                 'cli' => "\x1b[36m",
@@ -396,7 +396,7 @@ class Formatter
             if ($curr->type === TokenType::Whitespace) {
                 // Keep linebreaks before and after comments
                 if (
-                    str_contains($curr->token, "\n") && (
+                    strpos($curr->token, "\n") !== false && (
                         ($prev !== null && $prev->type === TokenType::Comment) ||
                         ($next !== null && $next->type === TokenType::Comment)
                     )
@@ -632,7 +632,7 @@ class Formatter
 
         foreach ($this->options['formats'] as $format) {
             if (
-                $token->type->value !== $format['type'] || ! (($token->flags & $format['flags']) === $format['flags'])
+                $token->type !== $format['type'] || ! (($token->flags & $format['flags']) === $format['flags'])
             ) {
                 continue;
             }
@@ -741,9 +741,10 @@ class Formatter
      *
      * @param Token $token the token to be checked
      *
+     * @return int|false
      * @psalm-return 1|2|false
      */
-    public static function isClause(Token $token): int|false
+    public static function isClause(Token $token)
     {
         if (
             ($token->type === TokenType::Keyword && isset(Parser::STATEMENT_PARSERS[$token->keyword]))

@@ -47,7 +47,7 @@ class ExpressionTest extends TestCase
         $this->assertEquals('x.id', $component->expr);
     }
 
-    #[DataProvider('parseErrProvider')]
+    /** @dataProvider parseErrProvider **/
     public function testParseErr(string $expr, string $error): void
     {
         $parser = new Parser();
@@ -144,7 +144,7 @@ class ExpressionTest extends TestCase
         ];
     }
 
-    #[DataProvider('mysqlCommandsProvider')]
+    /** @dataProvider mysqlCommandsProvider **/
     public function testMysqlCommands(string $expr, string $expected): void
     {
         $parser = new Parser($expr, true);

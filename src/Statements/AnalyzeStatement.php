@@ -33,5 +33,8 @@ class AnalyzeStatement extends Statement
      *
      * @var Expression[]|null
      */
-    public array|null $tables = null;
+    /**
+     * @var array|null
+     */
+    public $tables = null;
 }

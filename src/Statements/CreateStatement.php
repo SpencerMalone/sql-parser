@@ -278,7 +278,10 @@ class CreateStatement extends Statement
      *
      * Used by all `CREATE` statements.
      */
-    public Expression|null $name = null;
+    /**
+     * @var Expression|null
+     */
+    public $name = null;
 
     /**
      * The options of the entity (table, procedure, function, etc.).
@@ -289,7 +292,10 @@ class CreateStatement extends Statement
      * @see CreateStatement::FUNCTION_OPTIONS
      * @see CreateStatement::TRIGGER_OPTIONS
      */
-    public OptionsArray|null $entityOptions = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $entityOptions = null;
 
     /**
      * If `CREATE TABLE`, a list of columns and keys.
@@ -299,7 +305,10 @@ class CreateStatement extends Statement
      *
      * @var CreateDefinition[]|ArrayObj|null
      */
-    public array|ArrayObj|null $fields = null;
+    /**
+     * @var array|ArrayObj|null
+     */
+    public $fields = null;
 
     /**
      * If `CREATE TABLE WITH`.
@@ -308,7 +317,10 @@ class CreateStatement extends Statement
      *
      * Used by `CREATE TABLE`, `CREATE VIEW`
      */
-    public WithStatement|null $with = null;
+    /**
+     * @var WithStatement|null
+     */
+    public $with = null;
 
     /**
      * If `CREATE TABLE ... SELECT`.
@@ -316,55 +328,82 @@ class CreateStatement extends Statement
      *
      * Used by `CREATE TABLE`, `CREATE VIEW`
      */
-    public SelectStatement|null $select = null;
+    /**
+     * @var SelectStatement|null
+     */
+    public $select = null;
 
     /**
      * If `CREATE TABLE ... LIKE`.
      *
      * Used by `CREATE TABLE`
      */
-    public Expression|null $like = null;
+    /**
+     * @var Expression|null
+     */
+    public $like = null;
 
     /**
      * Expression used for partitioning.
      */
-    public string|null $partitionBy = null;
+    /**
+     * @var string|null
+     */
+    public $partitionBy = null;
 
     /**
      * The number of partitions.
      */
-    public int|null $partitionsNum = null;
+    /**
+     * @var int|null
+     */
+    public $partitionsNum = null;
 
     /**
      * Expression used for subpartitioning.
      */
-    public string|null $subpartitionBy = null;
+    /**
+     * @var string|null
+     */
+    public $subpartitionBy = null;
 
     /**
      * The number of subpartitions.
      */
-    public int|null $subpartitionsNum = null;
+    /**
+     * @var int|null
+     */
+    public $subpartitionsNum = null;
 
     /**
      * The partition of the new table.
      *
      * @var PartitionDefinition[]|null
      */
-    public array|null $partitions = null;
+    /**
+     * @var array|null
+     */
+    public $partitions = null;
 
     /**
      * If `CREATE TRIGGER` the name of the table.
      *
      * Used by `CREATE TRIGGER`.
      */
-    public Expression|null $table = null;
+    /**
+     * @var Expression|null
+     */
+    public $table = null;
 
     /**
      * The return data type of this routine.
      *
      * Used by `CREATE FUNCTION`.
      */
-    public DataType|null $return = null;
+    /**
+     * @var DataType|null
+     */
+    public $return = null;
 
     /**
      * The parameters of this routine.
@@ -373,7 +412,10 @@ class CreateStatement extends Statement
      *
      * @var ParameterDefinition[]|null
      */
-    public array|null $parameters = null;
+    /**
+     * @var array|null
+     */
+    public $parameters = null;
 
     /**
      * The body of this function or procedure.
@@ -450,7 +492,7 @@ class CreateStatement extends Statement
                 . $this->options->build() . ' '
                 . $this->name->build() . ' '
                 . $fields
-                . ($this->entityOptions?->build() ?? '')
+                . ($this->entityOptions !== null ? $this->entityOptions->build() : '')
                 . $partition;
         }
 
@@ -467,7 +509,7 @@ class CreateStatement extends Statement
                 . $this->name->build() . ' '
                 . $fields . ' AS ' . $builtStatement
                 . TokensList::buildFromArray($this->body) . ' '
-                . ($this->entityOptions?->build() ?? '');
+                . ($this->entityOptions !== null ? $this->entityOptions->build() : '');
         }
 
         if ($this->options->has('TRIGGER')) {

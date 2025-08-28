@@ -27,7 +27,7 @@ use function mb_str_split;
  *
  * @implements ArrayAccess<int, string>
  */
-class UtfString implements ArrayAccess, Stringable
+class UtfString implements ArrayAccess
 {
     /**
      * The multi-byte characters.
@@ -51,7 +51,7 @@ class UtfString implements ArrayAccess, Stringable
      *
      * @param int $offset the offset to be checked
      */
-    public function offsetExists(mixed $offset): bool
+    public function offsetExists($offset): bool
     {
         return $offset >= 0 && $offset < count($this->characters);
     }
@@ -61,7 +61,7 @@ class UtfString implements ArrayAccess, Stringable
      *
      * @param int $offset the offset to be returned
      */
-    public function offsetGet(mixed $offset): string
+    public function offsetGet($offset): string
     {
         return $this->characters[$offset] ?? '';
     }
@@ -74,7 +74,7 @@ class UtfString implements ArrayAccess, Stringable
      *
      * @throws Exception not implemented.
      */
-    public function offsetSet(mixed $offset, mixed $value): void
+    public function offsetSet($offset, $value): void
     {
         throw new Exception('Not implemented.');
     }
@@ -86,7 +86,7 @@ class UtfString implements ArrayAccess, Stringable
      *
      * @throws Exception not implemented.
      */
-    public function offsetUnset(mixed $offset): void
+    public function offsetUnset($offset): void
     {
         throw new Exception('Not implemented.');
     }

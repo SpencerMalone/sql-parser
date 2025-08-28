@@ -19,32 +19,50 @@ final class CreateDefinition implements Component
     /**
      * The name of the new column.
      */
-    public string|null $name = null;
+    /**
+     * @var string|null
+     */
+    public $name = null;
 
     /**
      * Whether this field is a constraint or not.
      */
-    public bool|null $isConstraint = null;
+    /**
+     * @var bool|null
+     */
+    public $isConstraint = null;
 
     /**
      * The data type of thew new column.
      */
-    public DataType|null $type = null;
+    /**
+     * @var DataType|null
+     */
+    public $type = null;
 
     /**
      * The key.
      */
-    public Key|null $key = null;
+    /**
+     * @var Key|null
+     */
+    public $key = null;
 
     /**
      * The table that is referenced.
      */
-    public Reference|null $references = null;
+    /**
+     * @var Reference|null
+     */
+    public $references = null;
 
     /**
      * The options of this field.
      */
-    public OptionsArray|null $options = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $options = null;
 
     /**
      * @param string|null       $name         the name of the field
@@ -54,11 +72,11 @@ final class CreateDefinition implements Component
      * @param Reference|null    $references   references
      */
     public function __construct(
-        string|null $name = null,
-        OptionsArray|null $options = null,
-        DataType|Key|null $type = null,
+        $name = null,
+        $options = null,
+        $type = null,
         bool $isConstraint = false,
-        Reference|null $references = null,
+        ?Reference $references = null
     ) {
         $this->name = $name;
         $this->options = $options;

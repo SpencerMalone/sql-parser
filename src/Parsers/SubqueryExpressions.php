@@ -12,18 +12,21 @@ use PhpMyAdmin\SqlParser\TokensList;
 use PhpMyAdmin\SqlParser\TokenType;
 
 use function in_array;
+use function is_string;
 use function strtoupper;
 use function trim;
 
 /**
  * Parses subquery expressions with enhanced support for various subquery types.
  */
-final class SubqueryExpressions implements Parseable
+class SubqueryExpressions implements Parseable
 {
     /**
      * Subquery operators that indicate a subquery expression.
+     *
+     * @var string[]
      */
-    private const SUBQUERY_OPERATORS = [
+    private static $subqueryOperators = [
         'IN',
         'NOT IN',
         'EXISTS',
@@ -35,8 +38,10 @@ final class SubqueryExpressions implements Parseable
 
     /**
      * Comparison operators that can be used with ANY/ALL/SOME.
+     *
+     * @var string[]
      */
-    private const COMPARISON_OPERATORS = [
+    private static $comparisonOperators = [
         '=', '!=', '<>', '<', '>', '<=', '>=',
     ];
 
@@ -47,7 +52,16 @@ final class SubqueryExpressions implements Parseable
      * @param TokensList           $list    the list of tokens that are being parsed
      * @param array<string, mixed> $options parameters for parsing
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = []): SubqueryExpression|null
+    /**
+     * Parses a subquery expression.
+     *
+     * @param Parser     $parser  the parser that serves as context
+     * @param TokensList $list    the list of tokens that are being parsed
+     * @param array      $options parameters for parsing
+     *
+     * @return SubqueryExpression|null
+     */
+    public static function parse(Parser $parser, TokensList $list, array $options = [])
     {
         $ret = new SubqueryExpression();
         $operator = null;
@@ -71,15 +85,16 @@ final class SubqueryExpressions implements Parseable
 
             // Check for subquery operators
             if ($token->type === TokenType::Keyword) {
-                $keyword = strtoupper($token->keyword);
+                $keyword = strtoupper((string) $token->keyword);
                 
-                if (in_array($keyword, self::SUBQUERY_OPERATORS, true)) {
+                if (in_array($keyword, self::$subqueryOperators, true)) {
                     $operator = $keyword;
                     $list->idx = $i + 1;
                     break;
                 } elseif ($keyword === 'NOT') {
                     // Look ahead for NOT IN, NOT EXISTS
                     $nextToken = null;
+                    $j = $i + 1;
                     for ($j = $i + 1; $j < $list->count; $j++) {
                         if ($list->tokens[$j]->type !== TokenType::Whitespace && 
                             $list->tokens[$j]->type !== TokenType::Comment) {
@@ -88,7 +103,7 @@ final class SubqueryExpressions implements Parseable
                         }
                     }
                     
-                    if ($nextToken && $nextToken->type === TokenType::Keyword) {
+                    if ($nextToken !== null && $nextToken->type === TokenType::Keyword && is_string($nextToken->keyword)) {
                         $nextKeyword = strtoupper($nextToken->keyword);
                         if ($nextKeyword === 'IN' || $nextKeyword === 'EXISTS') {
                             $operator = 'NOT ' . $nextKeyword;
@@ -101,7 +116,7 @@ final class SubqueryExpressions implements Parseable
 
             // Check for comparison operators followed by ANY/ALL/SOME
             if ($token->type === TokenType::Operator && 
-                in_array($token->value, self::COMPARISON_OPERATORS, true)) {
+                in_array($token->value, self::$comparisonOperators, true)) {
                 
                 // Look ahead for ANY/ALL/SOME
                 for ($j = $i + 1; $j < $list->count; $j++) {
@@ -111,7 +126,7 @@ final class SubqueryExpressions implements Parseable
                         continue;
                     }
                     
-                    if ($nextToken->type === TokenType::Keyword) {
+                    if ($nextToken->type === TokenType::Keyword && is_string($nextToken->keyword)) {
                         $nextKeyword = strtoupper($nextToken->keyword);
                         if (in_array($nextKeyword, ['ANY', 'ALL', 'SOME'], true)) {
                             $operator = $nextKeyword;
@@ -126,9 +141,9 @@ final class SubqueryExpressions implements Parseable
         }
 
         // If no operator found, check if we start with an opening parenthesis (scalar subquery)
-        if (!$operator) {
+        if ($operator === null) {
             $currentToken = $list->tokens[$list->idx] ?? null;
-            if ($currentToken && $currentToken->type === TokenType::Operator && $currentToken->value === '(') {
+            if ($currentToken !== null && $currentToken->type === TokenType::Operator && $currentToken->value === '(') {
                 $operator = 'SCALAR';
                 $foundOpenParen = true;
             } else {
@@ -160,7 +175,7 @@ final class SubqueryExpressions implements Parseable
             ++$list->idx;
         }
 
-        if (!$foundOpenParen) {
+        if ($foundOpenParen === false) {
             $parser->error('Expected opening parenthesis for subquery', $list->tokens[$list->idx] ?? null);
             return null;
         }
@@ -203,7 +218,7 @@ final class SubqueryExpressions implements Parseable
                 continue;
             }
 
-            if ($token->type === TokenType::Keyword && strtoupper($token->keyword) === 'AS') {
+            if ($token->type === TokenType::Keyword && is_string($token->keyword) && strtoupper($token->keyword) === 'AS') {
                 ++$list->idx;
                 // Skip whitespace
                 while ($list->idx < $list->count && 
@@ -213,12 +228,12 @@ final class SubqueryExpressions implements Parseable
                 }
                 
                 // Get alias
-                if ($list->idx < $list->count) {
+                if ($list->idx < $list->count && is_string($list->tokens[$list->idx]->value)) {
                     $alias = $list->tokens[$list->idx]->value;
                     ++$list->idx;
                 }
                 break;
-            } elseif ($token->type === TokenType::None || $token->type === TokenType::Symbol) {
+            } elseif (($token->type === TokenType::None || $token->type === TokenType::Symbol) && is_string($token->value)) {
                 // Alias without AS keyword
                 $alias = $token->value;
                 ++$list->idx;
@@ -231,14 +246,14 @@ final class SubqueryExpressions implements Parseable
         $ret->alias = $alias;
 
         // Try to parse the subquery as a statement
-        if (!empty($subqueryTokens)) {
+        if (count($subqueryTokens) > 0) {
             $subqueryTokensList = new TokensList($subqueryTokens);
             $subqueryParser = new Parser('', false);
             $subqueryParser->list = $subqueryTokensList;
             
             try {
-                $subqueryParser->parseQuery();
-                if (!empty($subqueryParser->statements)) {
+                $subqueryParser->parse();
+                if (count($subqueryParser->statements) > 0) {
                     $ret->statement = $subqueryParser->statements[0];
                 }
             } catch (\Exception $e) {

@@ -61,9 +61,11 @@ class UtfStringTest extends TestCase
 
     /**
      * Test access to string.
+     * @param string|\PhpMyAdmin\SqlParser\Tests\Misc\null $pos10
+     * @param string|\PhpMyAdmin\SqlParser\Tests\Misc\null $pos20
      */
-    #[DataProvider('utf8StringsProvider')]
-    public function testAccess(string $text, string|null $pos10, string|null $pos20): void
+    /** @dataProvider utf8StringsProvider **/
+    public function testAccess(string $text, $pos10, $pos20): void
     {
         $str = new UtfString($text);
         $this->assertEquals($pos10, $str->offsetGet(10));

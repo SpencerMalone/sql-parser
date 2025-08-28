@@ -26,19 +26,28 @@ class TransactionStatement extends Statement
     /**
      * The type of this query.
      */
-    public int|null $type = null;
+    /**
+     * @var int|null
+     */
+    public $type = null;
 
     /**
      * The list of statements in this transaction.
      *
      * @var Statement[]|null
      */
-    public array|null $statements = null;
+    /**
+     * @var array|null
+     */
+    public $statements = null;
 
     /**
      * The ending transaction statement which may be a `COMMIT` or a `ROLLBACK`.
      */
-    public TransactionStatement|null $end = null;
+    /**
+     * @var TransactionStatement|null
+     */
+    public $end = null;
 
     /**
      * Options for this query.

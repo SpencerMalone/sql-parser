@@ -29,7 +29,7 @@ class LockExpressionTest extends TestCase
         $this->assertEquals('LOW_PRIORITY WRITE', $component->type);
     }
 
-    #[DataProvider('parseErrProvider')]
+    /** @dataProvider parseErrProvider **/
     public function testParseErr(string $expr, string $error): void
     {
         $parser = new Parser();

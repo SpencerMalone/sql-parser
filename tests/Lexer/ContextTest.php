@@ -33,9 +33,10 @@ class ContextTest extends TestCase
 
     /**
      * Test for loading closest SQL context
+     * @param string|\PhpMyAdmin\SqlParser\Tests\Lexer\null $expected
      */
-    #[DataProvider('contextLoadingProvider')]
-    public function testLoadClosest(string $context, string|null $expected): void
+    /** @dataProvider contextLoadingProvider **/
+    public function testLoadClosest(string $context, $expected): void
     {
         $this->assertEquals($expected, Context::loadClosest($context));
         if ($expected !== null) {
@@ -85,7 +86,7 @@ class ContextTest extends TestCase
         ];
     }
 
-    #[DataProvider('contextNamesProvider')]
+    /** @dataProvider contextNamesProvider **/
     public function testLoadAll(string $context): void
     {
         Context::load($context);
@@ -139,7 +140,7 @@ class ContextTest extends TestCase
         ];
     }
 
-    #[DataProvider('contextClassesProvider')]
+    /** @dataProvider contextClassesProvider **/
     public function testLoadAllByClass(string $context): void
     {
         Context::load($context);
@@ -198,8 +199,11 @@ class ContextTest extends TestCase
         $this->assertFalse(Context::load('Foo'));
     }
 
-    #[DataProvider('providerForTestMode')]
-    public function testMode(int|string $mode, int $expected): void
+    /** @dataProvider providerForTestMode **/
+    /**
+     * @param int|string $mode
+     */
+    public function testMode($mode, int $expected): void
     {
         Context::setMode($mode);
         $this->assertSame($expected, Context::getMode());

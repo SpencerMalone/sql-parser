@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class KillStatementTest extends TestCase
 {
-    #[DataProvider('killProvider')]
+    /** @dataProvider killProvider **/
     public function testKill(string $test): void
     {
         $this->runParserTest($test);
@@ -33,7 +33,7 @@ class KillStatementTest extends TestCase
         ];
     }
 
-    #[DataProvider('buildKillProvider')]
+    /** @dataProvider buildKillProvider **/
     public function testBuildKill(string $sql): void
     {
         $parser = new Parser($sql);

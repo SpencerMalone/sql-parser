@@ -17,10 +17,16 @@ final class WithKeyword implements Component
     /** @var ArrayObj[] */
     public array $columns = [];
 
-    public Parser|null $statement = null;
+    public ?Parser $statement = null;
 
-    public function __construct(public string $name)
+    /**
+     * @var string
+     */
+    public $name;
+
+    public function __construct(string $name)
     {
+        $this->name = $name;
     }
 
     public function build(): string

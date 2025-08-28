@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class RenameStatementTest extends TestCase
 {
-    #[DataProvider('renameProvider')]
+    /** @dataProvider renameProvider **/
     public function testRename(string $test): void
     {
         $this->runParserTest($test);

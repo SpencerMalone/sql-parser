@@ -25,18 +25,24 @@ class PurgeStatement extends Statement
 {
     /**
      * The type of logs
+     *
+     * @var string|null
      */
-    public string|null $logType = null;
+    public $logType = null;
 
     /**
      * The end option of this query.
+     *
+     * @var string|null
      */
-    public string|null $endOption = null;
+    public $endOption = null;
 
     /**
      * The end expr of this query.
+     *
+     * @var Expression|null
      */
-    public Expression|null $endExpr = null;
+    public $endExpr = null;
 
     public function build(): string
     {
@@ -117,7 +123,10 @@ class PurgeStatement extends Statement
      * @param Token    $token            token to be parsed
      * @param string[] $expectedKeywords array of possibly expected keywords at this point
      */
-    private static function parseExpectedKeyword(Parser $parser, Token $token, array $expectedKeywords): string|null
+    /**
+     * @return string|null
+     */
+    private static function parseExpectedKeyword(Parser $parser, Token $token, array $expectedKeywords)
     {
         if ($token->type === TokenType::Keyword) {
             if (in_array($token->keyword, $expectedKeywords)) {

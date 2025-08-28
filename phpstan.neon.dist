@@ -15,3 +15,6 @@ parameters:
     checkDynamicProperties: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     checkImplicitMixed: true
+    phpVersion:
+        min: 70400
+        max: 80400

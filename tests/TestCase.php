@@ -61,7 +61,7 @@ abstract class TestCase extends BaseTestCase
      *     : list<array{string, Token|null, int}>
      * )
      */
-    public function getErrorsAsArray(Lexer|Parser $obj): array
+    public function getErrorsAsArray($obj): array
     {
         $ret = [];
         if ($obj instanceof Lexer) {
@@ -116,8 +116,8 @@ abstract class TestCase extends BaseTestCase
         $this->assertIsArray($data['errors']);
         $this->assertArrayHasKey('lexer', $data['errors']);
         $this->assertArrayHasKey('parser', $data['errors']);
-        $this->assertIsList($data['errors']['lexer']);
-        $this->assertIsList($data['errors']['parser']);
+        $this->assertIsArray($data['errors']['lexer']);
+        $this->assertIsArray($data['errors']['parser']);
 
         $data['query'] = file_get_contents('tests/data/' . $name . '.in');
         $this->assertIsString($data['query']);
@@ -137,7 +137,7 @@ abstract class TestCase extends BaseTestCase
          */
         $data = $this->getData($name);
 
-        if (str_contains($name, '/ansi/')) {
+        if (strpos($name, '/ansi/') !== false) {
             // set mode if appropriate
             Context::setMode(Context::SQL_MODE_ANSI_QUOTES);
         }

@@ -22,7 +22,7 @@ class LimitTest extends TestCase
         $this->assertEquals('2, 1', $component->build());
     }
 
-    #[DataProvider('parseProvider')]
+    /** @dataProvider parseProvider **/
     public function testParse(string $test): void
     {
         $this->runParserTest($test);

@@ -350,8 +350,10 @@ class Parser
 
     /**
      * The list of tokens that are parsed.
+     *
+     * @var TokensList|null
      */
-    public TokensList|null $list = null;
+    public $list = null;
 
     /**
      * List of statements parsed.
@@ -369,7 +371,7 @@ class Parser
      * @param string|UtfString|TokensList|null $list   the list of tokens to be parsed
      * @param bool                             $strict whether strict mode should be enabled or not
      */
-    public function __construct(string|UtfString|TokensList|null $list = null, bool $strict = false)
+    public function __construct($list = null, bool $strict = false)
     {
         if (Context::$keywords === []) {
             Context::load();
@@ -608,13 +610,13 @@ class Parser
     /**
      * Creates a new error log.
      *
-     * @param string $msg   the error message
-     * @param Token  $token the token that produced the error
-     * @param int    $code  the code of the error
+     * @param string     $msg   the error message
+     * @param Token|null $token the token that produced the error
+     * @param int        $code  the code of the error
      *
      * @throws ParserException throws the exception, if strict mode is enabled.
      */
-    public function error(string $msg, Token|null $token = null, int $code = 0): void
+    public function error(string $msg, ?Token $token = null, int $code = 0): void
     {
         $error = new ParserException(
             Translator::gettext($msg),

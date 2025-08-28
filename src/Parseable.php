@@ -18,5 +18,5 @@ interface Parseable
      *
      * @return Component|Component[]|null
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = []): Component|array|null;
+    public static function parse(Parser $parser, TokensList $list, array $options = []);
 }

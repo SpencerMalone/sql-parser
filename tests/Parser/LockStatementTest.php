@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class LockStatementTest extends TestCase
 {
-    #[DataProvider('lockProvider')]
+    /** @dataProvider lockProvider **/
     public function testLock(string $test): void
     {
         $this->runParserTest($test);

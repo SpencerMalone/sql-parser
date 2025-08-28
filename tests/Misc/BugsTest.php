@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class BugsTest extends TestCase
 {
-    #[DataProvider('bugProvider')]
+    /** @dataProvider bugProvider **/
     public function testBug(string $test): void
     {
         $this->runParserTest($test);

@@ -20,7 +20,10 @@ final class Key implements Component
     /**
      * The name of this key.
      */
-    public string|null $name = null;
+    /**
+     * @var string|null
+     */
+    public $name = null;
 
     /**
      * The key columns
@@ -32,17 +35,26 @@ final class Key implements Component
     /**
      * The type of this key.
      */
-    public string|null $type = null;
+    /**
+     * @var string|null
+     */
+    public $type = null;
 
     /**
      * The expression if the Key is not using column names
      */
-    public string|null $expr = null;
+    /**
+     * @var string|null
+     */
+    public $expr = null;
 
     /**
      * The options of this key or null if none where found.
      */
-    public OptionsArray|null $options = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $options = null;
 
     /**
      * @param string|null                           $name    the name of the key
@@ -52,10 +64,10 @@ final class Key implements Component
      * @phpstan-param array{name?: string, length?: int, order?: string}[] $columns
      */
     public function __construct(
-        string|null $name = null,
+        $name = null,
         array $columns = [],
-        string|null $type = null,
-        OptionsArray|null $options = null,
+        $type = null,
+        $options = null
     ) {
         $this->name = $name;
         $this->columns = $columns;

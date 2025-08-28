@@ -18,7 +18,10 @@ final class CaseExpression implements Component
     /**
      * The value to be compared.
      */
-    public Expression|null $value = null;
+    /**
+     * @var Expression|null
+     */
+    public $value = null;
 
     /**
      * The conditions in WHEN clauses.
@@ -44,12 +47,18 @@ final class CaseExpression implements Component
     /**
      * The result in ELSE section of expr.
      */
-    public Expression|null $elseResult = null;
+    /**
+     * @var Expression|null
+     */
+    public $elseResult = null;
 
     /**
      * The alias of this CASE statement.
      */
-    public string|null $alias = null;
+    /**
+     * @var string|null
+     */
+    public $alias = null;
 
     /**
      * The sub-expression.

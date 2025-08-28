@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class DropStatementTest extends TestCase
 {
-    #[DataProvider('dropProvider')]
+    /** @dataProvider dropProvider **/
     public function testDrop(string $test): void
     {
         $this->runParserTest($test);

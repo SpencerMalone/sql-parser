@@ -70,15 +70,17 @@ class InsertStatement extends Statement
 
     /**
      * Tables used as target for this statement.
+     *
+     * @var IntoKeyword|null
      */
-    public IntoKeyword|null $into = null;
+    public $into = null;
 
     /**
      * Values to be inserted.
      *
      * @var ArrayObj[]|null
      */
-    public array|null $values = null;
+    public $values = null;
 
     /**
      * If SET clause is present
@@ -86,19 +88,23 @@ class InsertStatement extends Statement
      *
      * @var SetOperation[]|null
      */
-    public array|null $set = null;
+    public $set = null;
 
     /**
      * If SELECT clause is present
      * holds the SelectStatement.
+     *
+     * @var SelectStatement|null
      */
-    public SelectStatement|null $select = null;
+    public $select = null;
 
     /**
      * If WITH CTE is present
      * holds the WithStatement.
+     *
+     * @var WithStatement|null
      */
-    public WithStatement|null $with = null;
+    public $with = null;
 
     /**
      * If ON DUPLICATE KEY UPDATE clause is present
@@ -106,7 +112,7 @@ class InsertStatement extends Statement
      *
      * @var SetOperation[]|null
      */
-    public array|null $onDuplicateSet = null;
+    public $onDuplicateSet = null;
 
     public function build(): string
     {

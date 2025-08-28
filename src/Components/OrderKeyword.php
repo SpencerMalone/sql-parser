@@ -13,19 +13,23 @@ final class OrderKeyword implements Component
 {
     /**
      * The expression that is used for ordering.
+     *
+     * @var Expression|null
      */
-    public Expression|null $expr = null;
+    public $expr = null;
 
     /**
      * The order type.
+     *
+     * @var string
      */
-    public OrderSortKeyword $type;
+    public $type;
 
     /**
-     * @param Expression|null  $expr the expression that we are sorting by
-     * @param OrderSortKeyword $type the sorting type
+     * @param Expression|null $expr the expression that we are sorting by
+     * @param string          $type the sorting type
      */
-    public function __construct(Expression|null $expr = null, OrderSortKeyword $type = OrderSortKeyword::Asc)
+    public function __construct($expr = null, $type = OrderSortKeyword::Asc)
     {
         $this->expr = $expr;
         $this->type = $type;
@@ -33,7 +37,7 @@ final class OrderKeyword implements Component
 
     public function build(): string
     {
-        return $this->expr . ' ' . $this->type->value;
+        return $this->expr . ' ' . $this->type;
     }
 
     public function __toString(): string

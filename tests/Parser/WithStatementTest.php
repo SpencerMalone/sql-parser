@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class WithStatementTest extends TestCase
 {
-    #[DataProvider('parseWith')]
+    /** @dataProvider parseWith **/
     public function testParse(string $test): void
     {
         $this->runParserTest($test);

@@ -50,8 +50,8 @@ class Error
                     $ret[] = [
                         $err->getMessage(),
                         $err->getCode(),
-                        $err->token?->token ?? '',
-                        $err->token?->position,
+                        $err->token !== null ? $err->token->token : '',
+                        $err->token !== null ? $err->token->position : null,
                     ];
                 }
             }
@@ -76,7 +76,7 @@ class Error
      */
     public static function format(
         array $errors,
-        string $format = '#%1$d: %2$s (near "%4$s" at position %5$d)',
+        string $format = '#%1$d: %2$s (near "%4$s" at position %5$d)'
     ): array {
         $ret = [];
 

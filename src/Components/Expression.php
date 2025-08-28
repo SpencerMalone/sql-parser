@@ -14,48 +14,66 @@ use function implode;
  * Parses a reference to an expression (column, table or database name, function
  * call, mathematical expression, etc.).
  */
-#[AllowDynamicProperties]
-final class Expression implements Component
+/**
+ * @final
+ */
+class Expression implements Component
 {
     /**
      * The name of this database.
+     *
+     * @var string|null
      */
-    public string|null $database = null;
+    public $database = null;
 
     /**
      * The name of this table.
+     *
+     * @var string|null
      */
-    public string|null $table = null;
+    public $table = null;
 
     /**
      * The name of the column.
+     *
+     * @var string|null
      */
-    public string|null $column = null;
+    public $column = null;
 
     /**
      * The sub-expression.
+     *
+     * @var string|null
      */
-    public string|null $expr = '';
+    public $expr = '';
 
     /**
      * The alias of this expression.
+     *
+     * @var string|null
      */
-    public string|null $alias = null;
+    public $alias = null;
 
     /**
      * The name of the function.
+     *
+     * @var mixed
      */
-    public string|null $function = null;
+    public $function = null;
 
     /**
      * The type of subquery.
+     *
+     * @var string|null
      */
-    public string|null $subquery = null;
+    public $subquery = null;
 
     /**
      * The structured subquery expression object (enhanced subquery support).
+     *
+     * @var SubqueryExpression|null
      */
-    public SubqueryExpression|null $subqueryExpression = null;
+    public $subqueryExpression = null;
 
     /**
      * Syntax:
@@ -73,10 +91,10 @@ final class Expression implements Component
      * @param string|null $alias    the name of the alias
      */
     public function __construct(
-        string|null $database = null,
-        string|null $table = null,
-        string|null $column = null,
-        string|null $alias = null,
+        $database = null,
+        $table = null,
+        $column = null,
+        $alias = null
     ) {
         if (($column === null) && ($alias === null)) {
             $this->expr = $database; // case 1
@@ -91,7 +109,7 @@ final class Expression implements Component
 
     public function build(): string
     {
-        if ($this->subqueryExpression) {
+        if ($this->subqueryExpression !== null) {
             $ret = $this->subqueryExpression->build();
         } elseif ($this->expr !== '' && $this->expr !== null) {
             $ret = $this->expr;
@@ -112,7 +130,7 @@ final class Expression implements Component
             $ret = implode('.', Context::escapeAll($fields));
         }
 
-        if (! empty($this->alias)) {
+        if ($this->alias !== null && $this->alias !== '') {
             $ret .= ' AS ' . Context::escape($this->alias);
         }
 

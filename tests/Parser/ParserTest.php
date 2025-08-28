@@ -17,7 +17,7 @@ use function sprintf;
 
 class ParserTest extends TestCase
 {
-    #[DataProvider('parseProvider')]
+    /** @dataProvider parseProvider **/
     public function testParse(string $test): void
     {
         $this->runParserTest($test);

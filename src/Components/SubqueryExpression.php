@@ -21,35 +21,54 @@ final class SubqueryExpression implements Component
 {
     /**
      * The subquery statement object.
+     *
+     * @var Statement|null
      */
-    public Statement|null $statement = null;
+    public $statement = null;
 
     /**
      * The subquery operator (IN, EXISTS, ANY, ALL, SOME, etc.).
+     *
+     * @var string|null
      */
-    public string|null $operator = null;
+    public $operator = null;
 
     /**
      * Whether this is a correlated subquery (references outer query).
+     *
+     * @var bool
      */
-    public bool $isCorrelated = false;
+    public $isCorrelated = false;
 
     /**
      * The alias for the subquery (mainly for derived tables).
+     *
+     * @var string|null
      */
-    public string|null $alias = null;
+    public $alias = null;
 
     /**
      * Raw SQL string of the subquery (fallback if statement parsing fails).
+     *
+     * @var string|null
      */
-    public string|null $rawSql = null;
+    public $rawSql = null;
 
+    /**
+     * SubqueryExpression constructor.
+     *
+     * @param Statement|null $statement    The subquery statement object
+     * @param string|null    $operator     The subquery operator
+     * @param bool           $isCorrelated Whether this is a correlated subquery
+     * @param string|null    $alias        The alias for the subquery
+     * @param string|null    $rawSql       Raw SQL string of the subquery
+     */
     public function __construct(
-        Statement|null $statement = null,
-        string|null $operator = null,
-        bool $isCorrelated = false,
-        string|null $alias = null,
-        string|null $rawSql = null,
+        $statement = null,
+        $operator = null,
+        $isCorrelated = false,
+        $alias = null,
+        $rawSql = null
     ) {
         $this->statement = $statement;
         $this->operator = $operator;
@@ -62,21 +81,21 @@ final class SubqueryExpression implements Component
     {
         $result = '';
 
-        if ($this->operator && $this->operator !== 'SCALAR') {
+        if ($this->operator !== null && $this->operator !== 'SCALAR') {
             $result .= $this->operator . ' ';
         }
 
         $result .= '(';
 
-        if ($this->statement) {
+        if ($this->statement !== null) {
             $result .= $this->statement->build();
-        } elseif ($this->rawSql) {
+        } elseif ($this->rawSql !== null) {
             $result .= $this->rawSql;
         }
 
         $result .= ')';
 
-        if ($this->alias) {
+        if ($this->alias !== null) {
             $result .= ' AS ' . $this->alias;
         }
 

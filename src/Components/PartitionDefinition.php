@@ -64,34 +64,52 @@ final class PartitionDefinition implements Component
     /**
      * Whether this entry is a subpartition or a partition.
      */
-    public bool|null $isSubpartition = null;
+    /**
+     * @var bool|null
+     */
+    public $isSubpartition = null;
 
     /**
      * The name of this partition.
      */
-    public string|null $name = null;
+    /**
+     * @var string|null
+     */
+    public $name = null;
 
     /**
      * The type of this partition (what follows the `VALUES` keyword).
      */
-    public string|null $type = null;
+    /**
+     * @var string|null
+     */
+    public $type = null;
 
     /**
      * The expression used to defined this partition.
      */
-    public Expression|string|null $expr = null;
+    /**
+     * @var Expression|string|null
+     */
+    public $expr = null;
 
     /**
      * The subpartitions of this partition.
      *
      * @var PartitionDefinition[]|null
      */
-    public array|null $subpartitions = null;
+    /**
+     * @var array|null
+     */
+    public $subpartitions = null;
 
     /**
      * The options of this field.
      */
-    public OptionsArray|null $options = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $options = null;
 
     public function build(): string
     {

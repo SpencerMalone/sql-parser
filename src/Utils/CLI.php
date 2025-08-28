@@ -81,13 +81,18 @@ class CLI
      *
      * @return string[]|false[]|false
      */
-    public function getopt(string $opt, array $long): array|false
+    /**
+     * @return array|false
+     */
+    public function getopt(string $opt, array $long)
     {
         return getopt($opt, $long);
     }
 
-    /** @return string[]|false[]|false */
-    public function parseHighlight(): array|false
+    /**
+     * @return string[]|false[]|false
+     */
+    public function parseHighlight()
     {
         $longopts = [
             'help',
@@ -163,8 +168,10 @@ class CLI
         echo '       cat file.sql | ' . $command . "\n";
     }
 
-    /** @return string[]|false[]|false */
-    public function parseLint(): array|false
+    /**
+     * @return string[]|false[]|false
+     */
+    public function parseLint()
     {
         $longopts = [
             'help',
@@ -241,7 +248,10 @@ class CLI
     }
 
     /** @return string[]|false[]|false */
-    public function parseTokenize(): array|false
+    /**
+     * @return array|false
+     */
+    public function parseTokenize()
     {
         $longopts = [
             'help',
@@ -287,7 +297,7 @@ class CLI
             $lexer = new Lexer($params['q'], false);
             foreach ($lexer->list->tokens as $idx => $token) {
                 echo '[TOKEN ', $idx, "]\n";
-                echo 'Type = ', $token->type->value, "\n";
+                echo 'Type = ', $token->type, "\n";
                 echo 'Flags = ', $token->flags, "\n";
                 echo 'Value = ';
                 var_export($token->value);
@@ -307,7 +317,10 @@ class CLI
         return 1;
     }
 
-    public function readStdin(): string|false|null
+    /**
+     * @return string|false|null
+     */
+    public function readStdin()
     {
         $read = [STDIN];
         $write = [];

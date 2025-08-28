@@ -24,7 +24,10 @@ class MaintenanceStatement extends Statement
      *
      * @var Expression[]|null
      */
-    public array|null $tables = null;
+    /**
+     * @var array|null
+     */
+    public $tables = null;
 
     /**
      * Function called after the token was processed.

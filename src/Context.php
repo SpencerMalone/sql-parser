@@ -15,7 +15,7 @@ use function is_int;
 use function is_numeric;
 use function preg_match;
 use function str_replace;
-use function str_starts_with;
+use function strpos;
 use function strlen;
 use function strtoupper;
 use function substr;
@@ -346,7 +346,7 @@ final class Context
      *
      * @param bool $isReserved checks if the keyword is reserved
      */
-    public static function isKeyword(string $string, bool $isReserved = false): int|null
+    public static function isKeyword(string $string, bool $isReserved = false): ?int
     {
         $upperString = strtoupper($string);
 
@@ -363,7 +363,7 @@ final class Context
     /**
      * Checks if the given string is an operator and returns the appropriate flag for the operator.
      */
-    public static function isOperator(string $string): int|null
+    public static function isOperator(string $string): ?int
     {
         return self::OPERATORS[$string] ?? null;
     }
@@ -373,10 +373,15 @@ final class Context
      */
     public static function isWhitespace(string $character): bool
     {
-        return match ($character) {
-            ' ', "\r", "\n", "\t" => true,
-            default => false,
-        };
+        switch ($character) {
+            case ' ':
+            case "\r":
+            case "\n":
+            case "\t":
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -384,22 +389,27 @@ final class Context
      *
      * @return int|null the appropriate flag for the comment type
      */
-    public static function isComment(string $string, bool $end = false): int|null
+    public static function isComment(string $string, bool $end = false): ?int
     {
-        return match (true) {
-            str_starts_with($string, '#') => Token::FLAG_COMMENT_BASH,
-            str_starts_with($string, '/*!') => Token::FLAG_COMMENT_MYSQL_CMD,
+        switch (true) {
+            case strpos($string, '#') === 0:
+                return Token::FLAG_COMMENT_BASH;
+            case strpos($string, '/*!') === 0:
+                return Token::FLAG_COMMENT_MYSQL_CMD;
             // If comment is opening C style (/*) or is closing C style (*/), warning, it could conflict
             // with wildcard and a real opening C style.
             // It would look like the following valid SQL statement: "SELECT */* comment */ FROM...".
-            str_starts_with($string, '/*') || str_starts_with($string, '*/') => Token::FLAG_COMMENT_C,
-            str_starts_with($string, '-- ')
-                || str_starts_with($string, "--\r")
-                || str_starts_with($string, "--\n")
-                || str_starts_with($string, "--\t")
-                || ($string === '--' && $end) => Token::FLAG_COMMENT_SQL,
-            default => null,
-        };
+            case strpos($string, '/*') === 0 || strpos($string, '*/') === 0:
+                return Token::FLAG_COMMENT_C;
+            case strpos($string, '-- ') === 0
+                || strpos($string, "--\r") === 0
+                || strpos($string, "--\n") === 0
+                || strpos($string, "--\t") === 0
+                || ($string === '--' && $end):
+                return Token::FLAG_COMMENT_SQL;
+            default:
+                return null;
+        }
     }
 
     /**
@@ -428,14 +438,19 @@ final class Context
      *
      * @return int|null the appropriate flag for the symbol type
      */
-    public static function isSymbol(string $character): int|null
+    public static function isSymbol(string $character): ?int
     {
-        return match ($character) {
-            '@' => Token::FLAG_SYMBOL_VARIABLE,
-            '`' => Token::FLAG_SYMBOL_BACKTICK,
-            ':', '?' => Token::FLAG_SYMBOL_PARAMETER,
-            default => null,
-        };
+        switch ($character) {
+            case '@':
+                return Token::FLAG_SYMBOL_VARIABLE;
+            case '`':
+                return Token::FLAG_SYMBOL_BACKTICK;
+            case ':':
+            case '?':
+                return Token::FLAG_SYMBOL_PARAMETER;
+            default:
+                return null;
+        }
     }
 
     /**
@@ -445,13 +460,16 @@ final class Context
      *
      * @return int|null the appropriate flag for the string type
      */
-    public static function isString(string $character): int|null
+    public static function isString(string $character): ?int
     {
-        return match ($character) {
-            '\'' => Token::FLAG_STRING_SINGLE_QUOTES,
-            '"' => Token::FLAG_STRING_DOUBLE_QUOTES,
-            default => null,
-        };
+        switch ($character) {
+            case '\'':
+                return Token::FLAG_STRING_SINGLE_QUOTES;
+            case '"':
+                return Token::FLAG_STRING_DOUBLE_QUOTES;
+            default:
+                return null;
+        }
     }
 
     /**
@@ -515,7 +533,7 @@ final class Context
      *
      * @return string|null The loaded context. `null` if no context was loaded.
      */
-    public static function loadClosest(string $context = ''): string|null
+    public static function loadClosest(string $context = ''): ?string
     {
         $length = strlen($context);
         for ($i = $length; $i > 0;) {
@@ -538,11 +556,11 @@ final class Context
         }
 
         /* Fallback to loading at least matching engine */
-        if (str_starts_with($context, 'MariaDb')) {
+        if (strpos($context, 'MariaDb') === 0) {
             return static::loadClosest('MariaDb100300');
         }
 
-        if (str_starts_with($context, 'MySql')) {
+        if (strpos($context, 'MySql') === 0) {
             return static::loadClosest('MySql50700');
         }
 
@@ -560,7 +578,7 @@ final class Context
     /**
      * Sets the SQL mode.
      */
-    public static function setMode(int|string $mode = self::SQL_MODE_NONE): void
+    public static function setMode($mode = self::SQL_MODE_NONE): void
     {
         if (is_int($mode)) {
             static::$mode = $mode;
@@ -582,39 +600,70 @@ final class Context
     /** @psalm-suppress MixedReturnStatement, MixedInferredReturnType Is caused by the LSB of the constants */
     private static function getModeFromString(string $mode): int
     {
-        return match ($mode) {
-            'ALLOW_INVALID_DATES' => self::SQL_MODE_ALLOW_INVALID_DATES,
-            'ANSI_QUOTES' => self::SQL_MODE_ANSI_QUOTES,
-            'COMPAT_MYSQL' => self::SQL_MODE_COMPAT_MYSQL,
-            'ERROR_FOR_DIVISION_BY_ZERO' => self::SQL_MODE_ERROR_FOR_DIVISION_BY_ZERO,
-            'HIGH_NOT_PRECEDENCE' => self::SQL_MODE_HIGH_NOT_PRECEDENCE,
-            'IGNORE_SPACE' => self::SQL_MODE_IGNORE_SPACE,
-            'NO_AUTO_CREATE_USER' => self::SQL_MODE_NO_AUTO_CREATE_USER,
-            'NO_AUTO_VALUE_ON_ZERO' => self::SQL_MODE_NO_AUTO_VALUE_ON_ZERO,
-            'NO_BACKSLASH_ESCAPES' => self::SQL_MODE_NO_BACKSLASH_ESCAPES,
-            'NO_DIR_IN_CREATE' => self::SQL_MODE_NO_DIR_IN_CREATE,
-            'NO_ENGINE_SUBSTITUTION' => self::SQL_MODE_NO_ENGINE_SUBSTITUTION,
-            'NO_FIELD_OPTIONS' => self::SQL_MODE_NO_FIELD_OPTIONS,
-            'NO_KEY_OPTIONS' => self::SQL_MODE_NO_KEY_OPTIONS,
-            'NO_TABLE_OPTIONS' => self::SQL_MODE_NO_TABLE_OPTIONS,
-            'NO_UNSIGNED_SUBTRACTION' => self::SQL_MODE_NO_UNSIGNED_SUBTRACTION,
-            'NO_ZERO_DATE' => self::SQL_MODE_NO_ZERO_DATE,
-            'NO_ZERO_IN_DATE' => self::SQL_MODE_NO_ZERO_IN_DATE,
-            'ONLY_FULL_GROUP_BY' => self::SQL_MODE_ONLY_FULL_GROUP_BY,
-            'PIPES_AS_CONCAT' => self::SQL_MODE_PIPES_AS_CONCAT,
-            'REAL_AS_FLOAT' => self::SQL_MODE_REAL_AS_FLOAT,
-            'STRICT_ALL_TABLES' => self::SQL_MODE_STRICT_ALL_TABLES,
-            'STRICT_TRANS_TABLES' => self::SQL_MODE_STRICT_TRANS_TABLES,
-            'NO_ENCLOSING_QUOTES' => self::SQL_MODE_NO_ENCLOSING_QUOTES,
-            'ANSI' => self::SQL_MODE_ANSI,
-            'DB2' => self::SQL_MODE_DB2,
-            'MAXDB' => self::SQL_MODE_MAXDB,
-            'MSSQL' => self::SQL_MODE_MSSQL,
-            'ORACLE' => self::SQL_MODE_ORACLE,
-            'POSTGRESQL' => self::SQL_MODE_POSTGRESQL,
-            'TRADITIONAL' => self::SQL_MODE_TRADITIONAL,
-            default => self::SQL_MODE_NONE,
-        };
+        switch ($mode) {
+            case 'ALLOW_INVALID_DATES':
+                return self::SQL_MODE_ALLOW_INVALID_DATES;
+            case 'ANSI_QUOTES':
+                return self::SQL_MODE_ANSI_QUOTES;
+            case 'COMPAT_MYSQL':
+                return self::SQL_MODE_COMPAT_MYSQL;
+            case 'ERROR_FOR_DIVISION_BY_ZERO':
+                return self::SQL_MODE_ERROR_FOR_DIVISION_BY_ZERO;
+            case 'HIGH_NOT_PRECEDENCE':
+                return self::SQL_MODE_HIGH_NOT_PRECEDENCE;
+            case 'IGNORE_SPACE':
+                return self::SQL_MODE_IGNORE_SPACE;
+            case 'NO_AUTO_CREATE_USER':
+                return self::SQL_MODE_NO_AUTO_CREATE_USER;
+            case 'NO_AUTO_VALUE_ON_ZERO':
+                return self::SQL_MODE_NO_AUTO_VALUE_ON_ZERO;
+            case 'NO_BACKSLASH_ESCAPES':
+                return self::SQL_MODE_NO_BACKSLASH_ESCAPES;
+            case 'NO_DIR_IN_CREATE':
+                return self::SQL_MODE_NO_DIR_IN_CREATE;
+            case 'NO_ENGINE_SUBSTITUTION':
+                return self::SQL_MODE_NO_ENGINE_SUBSTITUTION;
+            case 'NO_FIELD_OPTIONS':
+                return self::SQL_MODE_NO_FIELD_OPTIONS;
+            case 'NO_KEY_OPTIONS':
+                return self::SQL_MODE_NO_KEY_OPTIONS;
+            case 'NO_TABLE_OPTIONS':
+                return self::SQL_MODE_NO_TABLE_OPTIONS;
+            case 'NO_UNSIGNED_SUBTRACTION':
+                return self::SQL_MODE_NO_UNSIGNED_SUBTRACTION;
+            case 'NO_ZERO_DATE':
+                return self::SQL_MODE_NO_ZERO_DATE;
+            case 'NO_ZERO_IN_DATE':
+                return self::SQL_MODE_NO_ZERO_IN_DATE;
+            case 'ONLY_FULL_GROUP_BY':
+                return self::SQL_MODE_ONLY_FULL_GROUP_BY;
+            case 'PIPES_AS_CONCAT':
+                return self::SQL_MODE_PIPES_AS_CONCAT;
+            case 'REAL_AS_FLOAT':
+                return self::SQL_MODE_REAL_AS_FLOAT;
+            case 'STRICT_ALL_TABLES':
+                return self::SQL_MODE_STRICT_ALL_TABLES;
+            case 'STRICT_TRANS_TABLES':
+                return self::SQL_MODE_STRICT_TRANS_TABLES;
+            case 'NO_ENCLOSING_QUOTES':
+                return self::SQL_MODE_NO_ENCLOSING_QUOTES;
+            case 'ANSI':
+                return self::SQL_MODE_ANSI;
+            case 'DB2':
+                return self::SQL_MODE_DB2;
+            case 'MAXDB':
+                return self::SQL_MODE_MAXDB;
+            case 'MSSQL':
+                return self::SQL_MODE_MSSQL;
+            case 'ORACLE':
+                return self::SQL_MODE_ORACLE;
+            case 'POSTGRESQL':
+                return self::SQL_MODE_POSTGRESQL;
+            case 'TRADITIONAL':
+                return self::SQL_MODE_TRADITIONAL;
+            default:
+                return self::SQL_MODE_NONE;
+        }
     }
 
     /**
@@ -649,7 +698,7 @@ final class Context
      */
     public static function escapeAll(array $strings): array
     {
-        return array_map(static::escape(...), $strings);
+        return array_map([static::class, 'escape'], $strings);
     }
 
     /**
@@ -659,7 +708,7 @@ final class Context
      *
      * @return bool false on empty param, true/false on given constant/int value
      */
-    public static function hasMode(int|null $flag = null): bool
+    public static function hasMode(?int $flag = null): bool
     {
         if (empty($flag)) {
             return false;

@@ -102,7 +102,7 @@ SQL;
         }
     }
 
-    #[DataProvider('exportFileProvider')]
+    /** @dataProvider exportFileProvider **/
     public function testParseExport(string $test): void
     {
         $this->runParserTest($test);

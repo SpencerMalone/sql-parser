@@ -21,7 +21,9 @@ final class TranslatorTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         $loaderProperty = new ReflectionProperty(Translator::class, 'loader');
+        $loaderProperty->setAccessible(true);
         $loaderProperty->setValue(null, null);
+        $translatorProperty->setAccessible(true);
         $translatorProperty = new ReflectionProperty(Translator::class, 'translator');
         $translatorProperty->setValue(null, null);
         Translator::setLocale('en');
@@ -41,10 +43,12 @@ final class TranslatorTest extends TestCase
     #[TestWith([null, 'fr', 'fr'])]
     #[TestWith(['en', '', 'en'])]
     #[TestWith(['fr', '', 'fr'])]
-    public function testLoad(string|null $globalLang, string $locale, string $expectedLocale): void
+    public function testLoad(?string $globalLang, string $locale, string $expectedLocale): void
     {
         $loaderProperty = new ReflectionProperty(Translator::class, 'loader');
+        $loaderProperty->setAccessible(true);
         $loaderProperty->setValue(null, null);
+        $translatorProperty->setAccessible(true);
         $translatorProperty = new ReflectionProperty(Translator::class, 'translator');
         $translatorProperty->setValue(null, null);
         $GLOBALS['lang'] = $globalLang;
@@ -74,14 +78,18 @@ final class TranslatorTest extends TestCase
     public function testGettext(): void
     {
         $loaderProperty = new ReflectionProperty(Translator::class, 'loader');
+        $loaderProperty->setAccessible(true);
         $loaderProperty->setValue(null, null);
+        $translatorProperty->setAccessible(true);
         $translatorProperty = new ReflectionProperty(Translator::class, 'translator');
         $translatorProperty->setValue(null, null);
         Translator::setLocale('pt_BR');
+        $loaderProperty->setAccessible(true);
         self::assertSame(
             'Início de declaração inesperado.',
             Translator::gettext('Unexpected beginning of statement.'),
         );
+        $translatorProperty->setAccessible(true);
 
         $loaderProperty = new ReflectionProperty(Translator::class, 'loader');
         $loaderProperty->setValue(null, null);

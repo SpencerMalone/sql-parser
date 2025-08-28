@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ParameterTest extends TestCase
 {
-    #[DataProvider('parameterProvider')]
+    /** @dataProvider parameterProvider **/
     public function testParameter(string $test): void
     {
         $this->runParserTest($test);

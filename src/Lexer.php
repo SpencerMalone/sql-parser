@@ -10,7 +10,6 @@ use PhpMyAdmin\SqlParser\Exceptions\LexerException;
 use function in_array;
 use function mb_strlen;
 use function sprintf;
-use function str_ends_with;
 use function strlen;
 use function substr;
 
@@ -66,8 +65,10 @@ class Lexer
 
     /**
      * The string to be parsed.
+     *
+     * @var string|UtfString
      */
-    public string|UtfString $str = '';
+    public $str = '';
 
     /**
      * The length of `$str`.
@@ -111,9 +112,9 @@ class Lexer
      * @param string|UtfString $str       the query to be lexed
      * @param bool             $strict    whether strict mode should be
      *                                    enabled or not
-     * @param string           $delimiter the delimiter to be used
+     * @param string|null      $delimiter the delimiter to be used
      */
-    public function __construct(string|UtfString $str, bool $strict = false, string|null $delimiter = null)
+    public function __construct($str, bool $strict = false, ?string $delimiter = null)
     {
         if (Context::$keywords === []) {
             Context::load();
@@ -336,7 +337,7 @@ class Lexer
     private function solveAmbiguityOnFunctionKeywords(): void
     {
         $iBak = $this->list->idx;
-        $keywordFunction = TokenType::Keyword->value | Token::FLAG_KEYWORD_FUNCTION;
+        $keywordFunction = TokenType::Keyword | Token::FLAG_KEYWORD_FUNCTION;
         while (($keywordToken = $this->list->getNextOfTypeAndFlag(TokenType::Keyword, $keywordFunction)) !== null) {
             $next = $this->list->getNext();
             if (
@@ -387,8 +388,10 @@ class Lexer
 
     /**
      * Parses a keyword.
+     *
+     * @return Token|null
      */
-    public function parseKeyword(): Token|null
+    public function parseKeyword()
     {
         $token = '';
 
@@ -443,8 +446,10 @@ class Lexer
 
     /**
      * Parses a label.
+     *
+     * @return Token|null
      */
-    public function parseLabel(): Token|null
+    public function parseLabel()
     {
         $token = '';
 
@@ -485,8 +490,10 @@ class Lexer
 
     /**
      * Parses an operator.
+     *
+     * @return Token|null
      */
-    public function parseOperator(): Token|null
+    public function parseOperator()
     {
         $token = '';
 
@@ -519,8 +526,10 @@ class Lexer
 
     /**
      * Parses a whitespace.
+     *
+     * @return Token|null
      */
-    public function parseWhitespace(): Token|null
+    public function parseWhitespace()
     {
         $token = $this->str[$this->last];
 
@@ -539,8 +548,10 @@ class Lexer
 
     /**
      * Parses a comment.
+     *
+     * @return Token|null
      */
-    public function parseComment(): Token|null
+    public function parseComment()
     {
         $iBak = $this->last;
         $token = $this->str[$this->last];
@@ -656,8 +667,10 @@ class Lexer
 
     /**
      * Parses a boolean.
+     *
+     * @return Token|null
      */
-    public function parseBool(): Token|null
+    public function parseBool()
     {
         if ($this->last + 3 >= $this->len) {
             // At least `min(strlen('TRUE'), strlen('FALSE'))` characters are
@@ -687,8 +700,10 @@ class Lexer
 
     /**
      * Parses a number.
+     *
+     * @return Token|null
      */
-    public function parseNumber(): Token|null
+    public function parseNumber()
     {
         // A rudimentary state machine is being used to parse numbers due to
         // the various forms of their notation.
@@ -864,9 +879,10 @@ class Lexer
      *
      * @param string $quote additional starting symbol
      *
+     * @return Token|null
      * @throws LexerException
      */
-    public function parseString(string $quote = ''): Token|null
+    public function parseString(string $quote = '')
     {
         $token = $this->str[$this->last];
         $flags = Context::isString($token);
@@ -914,9 +930,10 @@ class Lexer
     /**
      * Parses a symbol.
      *
+     * @return Token|null
      * @throws LexerException
      */
-    public function parseSymbol(): Token|null
+    public function parseSymbol()
     {
         $token = $this->str[$this->last];
         $flags = Context::isSymbol($token);
@@ -962,8 +979,10 @@ class Lexer
 
     /**
      * Parses unknown parts of the query.
+     *
+     * @return Token|null
      */
-    public function parseUnknown(): Token|null
+    public function parseUnknown()
     {
         $token = $this->str[$this->last];
         if (Context::isSeparator($token)) {
@@ -974,7 +993,7 @@ class Lexer
             $token .= $this->str[$this->last];
 
             // Test if end of token equals the current delimiter. If so, remove it from the token.
-            if (str_ends_with($token, $this->delimiter)) {
+            if (substr($token, -strlen($this->delimiter)) === $this->delimiter) {
                 $token = substr($token, 0, -$this->delimiterLen);
                 $this->last -= $this->delimiterLen - 1;
                 break;
@@ -988,8 +1007,10 @@ class Lexer
 
     /**
      * Parses the delimiter of the query.
+     *
+     * @return Token|null
      */
-    public function parseDelimiter(): Token|null
+    public function parseDelimiter()
     {
         $idx = 0;
 
@@ -1006,7 +1027,10 @@ class Lexer
         return new Token($this->delimiter, TokenType::Delimiter);
     }
 
-    private function parse(): Token|null
+    /**
+     * @return Token|null
+     */
+    private function parse()
     {
         // It is best to put the parsers in order of their complexity
         // (ascending) and their occurrence rate (descending).

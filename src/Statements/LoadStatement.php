@@ -92,70 +92,106 @@ class LoadStatement extends Statement
     /**
      * File name being used to load data.
      */
-    public Expression|null $fileName = null;
+    /**
+     * @var Expression|null
+     */
+    public $fileName = null;
 
     /**
      * Table used as destination for this statement.
      */
-    public Expression|null $table = null;
+    /**
+     * @var Expression|null
+     */
+    public $table = null;
 
     /**
      * Partitions used as source for this statement.
      */
-    public ArrayObj|null $partition = null;
+    /**
+     * @var ArrayObj|null
+     */
+    public $partition = null;
 
     /**
      * Character set used in this statement.
      */
-    public Expression|null $charsetName = null;
+    /**
+     * @var Expression|null
+     */
+    public $charsetName = null;
 
     /**
      * Options for FIELDS/COLUMNS keyword.
      *
      * @see LoadStatement::STATEMENT_FIELDS_OPTIONS
      */
-    public OptionsArray|null $fieldsOptions = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $fieldsOptions = null;
 
     /**
      * Whether to use `FIELDS` or `COLUMNS` while building.
      */
-    public string|null $fieldsKeyword = null;
+    /**
+     * @var string|null
+     */
+    public $fieldsKeyword = null;
 
     /**
      * Options for OPTIONS keyword.
      *
      * @see LoadStatement::STATEMENT_LINES_OPTIONS
      */
-    public OptionsArray|null $linesOptions = null;
+    /**
+     * @var OptionsArray|null
+     */
+    public $linesOptions = null;
 
     /**
      * Column names or user variables.
      *
      * @var Expression[]|null
      */
-    public array|null $columnNamesOrUserVariables = null;
+    /**
+     * @var array|null
+     */
+    public $columnNamesOrUserVariables = null;
 
     /**
      * SET clause's updated values(optional).
      *
      * @var SetOperation[]|null
      */
-    public array|null $set = null;
+    /**
+     * @var array|null
+     */
+    public $set = null;
 
     /**
      * Ignore 'number' LINES/ROWS.
      */
-    public Expression|null $ignoreNumber = null;
+    /**
+     * @var Expression|null
+     */
+    public $ignoreNumber = null;
 
     /**
      * REPLACE/IGNORE Keyword.
      */
-    public string|null $replaceIgnore = null;
+    /**
+     * @var string|null
+     */
+    public $replaceIgnore = null;
 
     /**
      * LINES/ROWS Keyword.
      */
-    public string|null $linesRows = null;
+    /**
+     * @var string|null
+     */
+    public $linesRows = null;
 
     public function build(): string
     {

@@ -25,7 +25,7 @@ class RenameStatement extends Statement
      *
      * @var RenameOperation[]|null
      */
-    public array|null $renames = null;
+    public $renames = null;
 
     /**
      * Function called before the token is processed.

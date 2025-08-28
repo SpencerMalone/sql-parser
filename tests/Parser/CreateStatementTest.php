@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class CreateStatementTest extends TestCase
 {
-    #[DataProvider('createProvider')]
+    /** @dataProvider createProvider **/
     public function testCreate(string $test): void
     {
         $this->runParserTest($test);

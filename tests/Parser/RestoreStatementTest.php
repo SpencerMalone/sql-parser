@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class RestoreStatementTest extends TestCase
 {
-    #[DataProvider('restoreProvider')]
+    /** @dataProvider restoreProvider **/
     public function testRestore(string $test): void
     {
         $this->runParserTest($test);

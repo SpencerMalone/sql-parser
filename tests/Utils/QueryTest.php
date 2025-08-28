@@ -17,7 +17,7 @@ class QueryTest extends TestCase
      * @psalm-param non-empty-string $query
      * @psalm-param array<key-of<properties-of<StatementFlags>>, bool|StatementType|null> $expected
      */
-    #[DataProvider('getFlagsProvider')]
+    /** @dataProvider getFlagsProvider **/
     public function testGetFlags(string $query, array $expected): void
     {
         $parser = new Parser($query);
@@ -380,7 +380,7 @@ class QueryTest extends TestCase
     }
 
     /** @param string[] $expected */
-    #[DataProvider('getTablesProvider')]
+    /** @dataProvider getTablesProvider **/
     public function testGetTables(string $query, array $expected): void
     {
         $parser = new Parser($query);

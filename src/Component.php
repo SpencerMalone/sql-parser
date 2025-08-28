@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser;
 
-use Stringable;
-
 /**
  * Defines a component that is later extended to parse specialized components or keywords.
  *
@@ -14,7 +12,7 @@ use Stringable;
  *
  * A component (of a statement) is a part of a statement that is common to multiple query types.
  */
-interface Component extends Stringable
+interface Component
 {
     /**
      * Builds the string representation of a component of this type.

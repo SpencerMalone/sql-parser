@@ -19,7 +19,7 @@ use function array_keys;
 use function array_push;
 use function is_array;
 use function is_string;
-use function str_contains;
+use function strpos;
 use function strtoupper;
 use function trim;
 
@@ -30,8 +30,10 @@ use function trim;
  *
  * Abstract statement definition.
  */
-#[AllowDynamicProperties]
-abstract class Statement implements Stringable
+/**
+ * @final
+ */
+abstract class Statement
 {
     /**
      * Options for this statement.
@@ -54,41 +56,40 @@ abstract class Statement implements Stringable
      * @psalm-var array<string, (positive-int|array{positive-int, ('var'|'var='|'expr'|'expr=')})>
      */
     public static array $statementOptions = [];
-
     protected const ADD_CLAUSE = 1;
     protected const ADD_KEYWORD = 2;
-
     /**
      * The clauses of this statement, in order.
      *
      * @var array<string, array{non-empty-string, int-mask-of<self::ADD_*>}>
      */
     public static array $clauses = [];
-
     /**
      * The options of this query.
      *
+     * @var OptionsArray|null
      * @see Statement::$statementOptions
      */
-    public OptionsArray|null $options = null;
-
+    public $options = null;
     /**
      * The index of the first token used in this statement.
+     *
+     * @var int|null
      */
-    public int|null $first = null;
-
+    public $first = null;
     /**
      * The index of the last token used in this statement.
+     *
+     * @var int|null
      */
-    public int|null $last = null;
-
+    public $last = null;
     /**
      * @param Parser|null     $parser the instance that requests parsing
      * @param TokensList|null $list   the list of tokens to be parsed
      *
      * @throws ParserException
      */
-    public function __construct(Parser|null $parser = null, TokensList|null $list = null)
+    public function __construct(?Parser $parser = null, ?TokensList $list = null)
     {
         if (($parser === null) || ($list === null)) {
             return;
@@ -96,7 +97,6 @@ abstract class Statement implements Stringable
 
         $this->parse($parser, $list);
     }
-
     /**
      * Builds the string representation of this statement.
      */
@@ -160,7 +160,6 @@ abstract class Statement implements Stringable
 
         return $query;
     }
-
     /**
      * Parses the statements defined by the tokens list.
      *
@@ -333,7 +332,6 @@ abstract class Statement implements Stringable
         // This may be corrected by the parser.
         $this->last = --$list->idx; // Go back to last used token.
     }
-
     /**
      * Function called before the token is processed.
      *
@@ -344,7 +342,6 @@ abstract class Statement implements Stringable
     public function before(Parser $parser, TokensList $list, Token $token): void
     {
     }
-
     /**
      * Function called after the token was processed.
      *
@@ -355,7 +352,6 @@ abstract class Statement implements Stringable
     public function after(Parser $parser, TokensList $list, Token $token): void
     {
     }
-
     /**
      * Gets the clauses of this statement.
      *
@@ -365,7 +361,6 @@ abstract class Statement implements Stringable
     {
         return static::$clauses;
     }
-
     /**
      * Gets the clause order of this statement as an array
      * with clause as key and index as value.
@@ -389,7 +384,6 @@ abstract class Statement implements Stringable
 
         return array_flip($clauses);
     }
-
     /**
      * Builds the string representation of this statement.
      *
@@ -399,7 +393,6 @@ abstract class Statement implements Stringable
     {
         return $this->build();
     }
-
     /**
      * Validates the order of the clauses in parsed statement
      * Ideally this should be called after successfully
@@ -455,7 +448,7 @@ abstract class Statement implements Stringable
 
             // Handle ordering of Multiple Joins in a query
             if ($clauseStartIdx !== -1) {
-                $containsJoinClause = str_contains(strtoupper($clauseType), 'JOIN');
+                $containsJoinClause = strpos(strtoupper($clauseType), 'JOIN') !== false;
                 if ($minJoin === 0 && $containsJoinClause) {
                     // First JOIN clause is detected
                     $minJoin = $maxJoin = $clauseStartIdx;

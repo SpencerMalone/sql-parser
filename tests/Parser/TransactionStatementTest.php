@@ -21,7 +21,7 @@ class TransactionStatementTest extends TestCase
         );
     }
 
-    #[DataProvider('transactionProvider')]
+    /** @dataProvider transactionProvider **/
     public function testTransaction(string $test): void
     {
         $this->runParserTest($test);

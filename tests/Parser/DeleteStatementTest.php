@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class DeleteStatementTest extends TestCase
 {
-    #[DataProvider('deleteProvider')]
+    /** @dataProvider deleteProvider **/
     public function testDelete(string $test): void
     {
         $this->runParserTest($test);

@@ -18,13 +18,17 @@ class Translator
 {
     /**
      * The MoTranslator loader object.
+     *
+     * @var Loader|null
      */
-    private static Loader|null $loader = null;
+    private static $loader = null;
 
     /**
      * The MoTranslator translator object.
+     *
+     * @var MoTranslator|null
      */
-    private static MoTranslator|null $translator = null;
+    private static $translator = null;
 
     private static string $locale = '';
 

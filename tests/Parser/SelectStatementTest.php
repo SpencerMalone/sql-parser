@@ -19,7 +19,7 @@ class SelectStatementTest extends TestCase
         $this->assertEquals(10, $stmt->options->get('MAX_STATEMENT_TIME'));
     }
 
-    #[DataProvider('selectProvider')]
+    /** @dataProvider selectProvider **/
     public function testSelect(string $test): void
     {
         $this->runParserTest($test);

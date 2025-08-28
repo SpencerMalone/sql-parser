@@ -48,7 +48,7 @@ class LexerTest extends TestCase
         $lexer->error('strict error', 'foo', 1, 4);
     }
 
-    #[DataProvider('lexProvider')]
+    /** @dataProvider lexProvider **/
     public function testLex(string $test): void
     {
         $this->runParserTest($test);

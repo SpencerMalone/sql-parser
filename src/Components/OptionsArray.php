@@ -14,7 +14,19 @@ use function strcasecmp;
 final class OptionsArray implements Component
 {
     /**
-     * @param array<int, string|array<string, string|bool|null>> $options $options The array of options.
+     * @var array<int, string|array<string, string|bool|null>> The array of options.
+     *              Options that have a value must be an array with at least two keys `name` and `expr` or `value`.
+     * @psalm-var array<int, string|array{
+     *  name: string,
+     *  equals: bool,
+     *  expr: string|Expression,
+     *  value: string|null
+     * }>
+     */
+    public $options;
+
+    /**
+     * @param array<int, string|array<string, string|bool|null>> $options The array of options.
      *              Options that have a value must be an array with at least two keys `name` and `expr` or `value`.
      * @psalm-param array<int, string|array{
      *  name: string,
@@ -23,8 +35,9 @@ final class OptionsArray implements Component
      *  value: string|null
      * }> $options
      */
-    public function __construct(public array $options = [])
+    public function __construct(array $options = [])
     {
+        $this->options = $options;
     }
 
     public function build(): string
@@ -68,8 +81,10 @@ final class OptionsArray implements Component
      * @param string $key     the key to be checked
      * @param bool   $getExpr Gets the expression instead of the value.
      *                        The value is the processed form of the expression.
+     *
+     * @return string|Expression
      */
-    public function get(string $key, bool $getExpr = false): string|Expression
+    public function get(string $key, bool $getExpr = false)
     {
         foreach ($this->options as $option) {
             if (is_array($option)) {

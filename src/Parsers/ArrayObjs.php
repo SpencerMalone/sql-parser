@@ -27,7 +27,7 @@ final class ArrayObjs implements Parseable
      *
      * @return ArrayObj|Component[]
      */
-    public static function parse(Parser $parser, TokensList $list, array $options = []): ArrayObj|array
+    public static function parse(Parser $parser, TokensList $list, array $options = [])
     {
         $ret = empty($options['type']) ? new ArrayObj() : [];
 

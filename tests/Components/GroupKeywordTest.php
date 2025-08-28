@@ -53,8 +53,8 @@ class GroupKeywordTest extends TestCase
     }
 
     /** @param GroupKeyword|array<GroupKeyword> $component */
-    #[DataProvider('provideExpressions')]
-    public function testBuild(GroupKeyword|array $component, string $expected): void
+    /** @dataProvider provideExpressions **/
+    public function testBuild($component, string $expected): void
     {
         if (is_array($component)) {
             $this->assertSame($expected, GroupKeywords::buildAll($component));
@@ -71,6 +71,6 @@ class GroupKeywordTest extends TestCase
     /** @return array<GroupKeyword> */
     private static function makeComponentsFrom(string ...$string): array
     {
-        return array_map(self::makeComponentFrom(...), $string);
+        return array_map(\Closure::fromCallable([self::class, 'makeComponentFrom']), $string);
     }
 }

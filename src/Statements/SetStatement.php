@@ -77,28 +77,32 @@ class SetStatement extends Statement
 
     /**
      * Options used in current statement.
+     *
+     * @var OptionsArray|null
      */
-    public OptionsArray|null $options = null;
+    public $options = null;
 
     /**
      * The end options of this query.
      *
      * @see SetStatement::STATEMENT_END_OPTIONS
+     *
+     * @var OptionsArray|null
      */
-    public OptionsArray|null $endOptions = null;
+    public $endOptions = null;
 
     /**
      * The updated values.
      *
      * @var SetOperation[]|null
      */
-    public array|null $set = null;
+    public $set = null;
 
     public function build(): string
     {
         $ret = 'SET ' . $this->options->build()
             . ' ' . SetOperations::buildAll($this->set)
-            . ' ' . ($this->endOptions?->build() ?? '');
+            . ' ' . ($this->endOptions !== null ? $this->endOptions->build() : '');
 
         return trim($ret);
     }
