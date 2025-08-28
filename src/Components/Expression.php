@@ -101,6 +101,13 @@ class Expression extends Component
     public $subquery;
 
     /**
+     * The structured subquery expression object (enhanced subquery support).
+     *
+     * @var SubqueryExpression|null
+     */
+    public $subqueryExpression;
+
+    /**
      * Syntax:
      *     new Expression('expr')
      *     new Expression('expr', 'alias')
@@ -466,7 +473,9 @@ class Expression extends Component
             return implode(', ', $component);
         }
 
-        if ($component->expr !== '' && $component->expr !== null) {
+        if ($component->subqueryExpression) {
+            $ret = SubqueryExpression::build($component->subqueryExpression);
+        } elseif ($component->expr !== '' && $component->expr !== null) {
             $ret = $component->expr;
         } else {
             $fields = [];

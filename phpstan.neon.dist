@@ -20,3 +20,4 @@ parameters:
     checkDynamicProperties: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     checkImplicitMixed: true
+    phpVersion: 70400
