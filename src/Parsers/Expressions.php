@@ -16,7 +16,10 @@ use function implode;
 use function in_array;
 use function rtrim;
 use function strlen;
+use function strpos;
 use function strtoupper;
+use function substr;
+use function substr_count;
 use function trim;
 
 /**
@@ -360,9 +363,132 @@ class Expressions implements Parseable
             return null;
         }
 
+        // Check if this expression contains a subquery and parse it
+        self::parseSubqueryInExpression($parser, $ret);
+
         --$list->idx;
 
         return $ret;
+    }
+
+    /**
+     * Parses subqueries within an expression and stores them as structured components.
+     *
+     * @param Parser     $parser the parser context
+     * @param Expression $expression the expression to analyze for subqueries
+     */
+    private static function parseSubqueryInExpression(Parser $parser, Expression $expression): void
+    {
+        $expr = $expression->expr;
+        
+        // Check if the entire expression is a single subquery: starts with ( and ends with )
+        // AND the parentheses are balanced for the entire expression (not multiple subqueries)
+        if (strlen($expr) > 0 && $expr[0] === '(' && $expr[strlen($expr) - 1] === ')') {
+            // Count the number of (SELECT patterns - case insensitive
+            $exprUpper = strtoupper($expr);
+            $selectCount = substr_count($exprUpper, '(SELECT');
+            
+            if ($selectCount >= 1 && strpos($exprUpper, 'SELECT') !== false) {
+                try {
+                    $lexer = new \PhpMyAdmin\SqlParser\Lexer($expr);
+                    $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
+                    
+                    $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
+                    
+                    if ($subquery && $subquery->statement) {
+                        // Successfully parsed as subquery - replace the expression
+                        $expression->subqueryExpression = $subquery;
+                        $expression->expr = ''; // Clear the string representation
+                        
+                        // Copy any errors from subquery parser
+                        $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
+                        return;
+                    }
+                } catch (\Exception $e) {
+                    // If subquery parsing fails, leave as string expression
+                }
+            }
+        }
+        
+        // Handle complex expressions with multiple subqueries
+        // Only do this if the expression is not a single subquery wrapped in parentheses
+        if (strpos(strtoupper($expr), '(SELECT') !== false) {
+            // First check if this might be a problematic case where we have nested structures
+            // Skip complex parsing for expressions that should be handled as single subqueries
+            
+            $components = [];
+            $lastPos = 0;
+            
+            // Find each top-level subquery pattern (not nested inside other subqueries)
+            $exprUpper = strtoupper($expr);
+            while (($pos = strpos($exprUpper, '(SELECT', $lastPos)) !== false) {
+                // Check if this (SELECT is at the start of the expression - if so, it might be the whole subquery
+                if ($pos === 0 && $expr[strlen($expr) - 1] === ')') {
+                    // This looks like a single subquery wrapped in parens - let the single subquery logic handle it
+                    break;
+                }
+                
+                // Add text before the subquery as a string component
+                if ($pos > $lastPos) {
+                    $beforeText = substr($expr, $lastPos, $pos - $lastPos);
+                    if (trim($beforeText) !== '') {
+                        $components[] = $beforeText;
+                    }
+                }
+                
+                // Find the matching closing parenthesis for this subquery
+                $depth = 0;
+                $end = $pos;
+                
+                for ($i = $pos; $i < strlen($expr); $i++) {
+                    if ($expr[$i] === '(') $depth++;
+                    if ($expr[$i] === ')') $depth--;
+                    if ($depth === 0) {
+                        $end = $i + 1;
+                        break;
+                    }
+                }
+                
+                // Extract and parse the subquery
+                $subquerySql = substr($expr, $pos, $end - $pos);
+                
+                try {
+                    $lexer = new \PhpMyAdmin\SqlParser\Lexer($subquerySql);
+                    $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
+                    
+                    $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
+                    
+                    if ($subquery && $subquery->statement) {
+                        $components[] = $subquery;
+                        // Copy any errors from subquery parser
+                        $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
+                    } else {
+                        // If parsing fails, keep as text
+                        $components[] = $subquerySql;
+                    }
+                } catch (\Exception $e) {
+                    // If subquery parsing fails, keep as text
+                    $components[] = $subquerySql;
+                }
+                
+                // Move to next potential subquery
+                $lastPos = $end;
+            }
+            
+            // Add any remaining text
+            if ($lastPos < strlen($expr)) {
+                $remainingText = substr($expr, $lastPos);
+                if (trim($remainingText) !== '') {
+                    $components[] = $remainingText;
+                }
+            }
+            
+            // Store the components if we found multiple parts or a single non-string component
+            if (count($components) > 1 || (count($components) === 1 && !is_string($components[0]))) {
+                $expression->components = $components;
+                $expression->expr = ''; // Clear the string representation
+            }
+        }
     }
 
     /** @param Expression[] $component the component to be built */

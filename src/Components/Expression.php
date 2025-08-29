@@ -76,6 +76,14 @@ class Expression implements Component
     public $subqueryExpression = null;
 
     /**
+     * Mixed components of the expression (text segments and subqueries).
+     * Used for complex expressions like "(SELECT ...) + (SELECT ...)"
+     *
+     * @var array|null
+     */
+    public $components = null;
+
+    /**
      * Syntax:
      *     new Expression('expr')
      *     new Expression('expr', 'alias')
@@ -109,7 +117,16 @@ class Expression implements Component
 
     public function build(): string
     {
-        if ($this->subqueryExpression !== null) {
+        if ($this->components !== null) {
+            $ret = '';
+            foreach ($this->components as $component) {
+                if (is_string($component)) {
+                    $ret .= $component;
+                } elseif (is_object($component) && method_exists($component, 'build')) {
+                    $ret .= $component->build();
+                }
+            }
+        } elseif ($this->subqueryExpression !== null) {
             $ret = $this->subqueryExpression->build();
         } elseif ($this->expr !== '' && $this->expr !== null) {
             $ret = $this->expr;
