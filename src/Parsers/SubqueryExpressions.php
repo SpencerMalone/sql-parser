@@ -70,21 +70,36 @@ class SubqueryExpressions implements Parseable
         $foundOpenParen = false;
         $alias = null;
 
-        // Look for subquery operators
-        $startIdx = $list->idx;
-        for ($i = $startIdx; $i < $list->count; $i++) {
+        // Check if this starts with a parenthesis - if so, it's a SCALAR subquery
+        $firstToken = null;
+        for ($i = $list->idx; $i < $list->count; $i++) {
             $token = $list->tokens[$i];
-
-            if ($token->type === TokenType::Delimiter) {
-                break;
-            }
-
             if ($token->type === TokenType::Whitespace || $token->type === TokenType::Comment) {
                 continue;
             }
+            $firstToken = $token;
+            break;
+        }
+        
+        if ($firstToken !== null && $firstToken->type === TokenType::Operator && $firstToken->value === '(') {
+            // This is a SCALAR subquery starting with parentheses
+            $operator = 'SCALAR';
+        } else {
+            // Look for subquery operators
+            $startIdx = $list->idx;
+            for ($i = $startIdx; $i < $list->count; $i++) {
+                $token = $list->tokens[$i];
 
-            // Check for subquery operators
-            if ($token->type === TokenType::Keyword) {
+                if ($token->type === TokenType::Delimiter) {
+                    break;
+                }
+
+                if ($token->type === TokenType::Whitespace || $token->type === TokenType::Comment) {
+                    continue;
+                }
+
+                // Check for subquery operators
+                if ($token->type === TokenType::Keyword) {
                 $keyword = strtoupper((string) $token->keyword);
                 
                 if (in_array($keyword, self::$subqueryOperators, true)) {
@@ -138,6 +153,8 @@ class SubqueryExpressions implements Parseable
                     break;
                 }
             }
+        }
+        
         }
 
         // If no operator found, check if we start with an opening parenthesis (scalar subquery)

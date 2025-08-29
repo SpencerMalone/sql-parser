@@ -147,6 +147,10 @@ final class Conditions implements Parseable
                     if ($expr->expr !== '') {
                         $expr->leftOperand = trim($expr->leftOperand);
                         $expr->rightOperand = trim($expr->rightOperand);
+                        
+                        // Check if the condition contains subqueries and parse them
+                        self::parseSubqueries($parser, $expr);
+                        
                         $ret[] = $expr;
                     }
 
@@ -250,64 +254,144 @@ final class Conditions implements Parseable
     {
         // Look for subquery patterns in the expression
         $expr = $condition->expr;
+        $exprUpper = strtoupper($expr);
         
-        // Find all subquery patterns: (SELECT ...)
-        if (strpos($expr, '(SELECT') !== false) {
+        
+        // Find all subquery patterns: (SELECT ...) or EXISTS (SELECT ...)
+        if (strpos($exprUpper, '(SELECT') !== false || strpos($exprUpper, 'EXISTS') !== false) {
             $components = [];
             $lastPos = 0;
             
-            // Find each subquery
-            $pos = strpos($expr, '(SELECT', $lastPos);
-            while ($pos !== false) {
-                // Add text before the subquery as an Expression component
-                if ($pos > $lastPos) {
-                    $beforeText = substr($expr, $lastPos, $pos - $lastPos);
-                    $components[] = new Expression($beforeText);
+            // Check for EXISTS pattern first
+            $existsPos = strpos($exprUpper, 'EXISTS');
+            if ($existsPos !== false) {
+                // Find the opening parenthesis after EXISTS
+                $parenPos = strpos($expr, '(', $existsPos);
+                if ($parenPos !== false) {
+                    
+                    // Find matching closing parenthesis
+                    $depth = 0;
+                    $end = $parenPos;
+                    
+                    for ($i = $parenPos; $i < strlen($expr); $i++) {
+                        if ($expr[$i] === '(') $depth++;
+                        if ($expr[$i] === ')') $depth--;
+                        if ($depth === 0) {
+                            $end = $i + 1;
+                            break;
+                        }
+                    }
+                    
+                    // Extract EXISTS subquery (including parentheses)
+                    $existsClause = substr($expr, $existsPos, $end - $existsPos);
+                    $subquerySql = substr($expr, $parenPos, $end - $parenPos);
+                    
+                    // Parse the subquery part
+                    $lexer = new \PhpMyAdmin\SqlParser\Lexer($subquerySql);
+                    $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
+                    $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
+                    
+                    if ($subquery) {
+                        $subquery->operator = 'EXISTS';
+                        // Add text before EXISTS if any
+                        if ($existsPos > 0) {
+                            $beforeExists = substr($expr, 0, $existsPos);
+                            $components[] = new Expression($beforeExists);
+                        }
+                        $components[] = $subquery;
+                    } else {
+                        $components[] = new Expression($existsClause);
+                    }
+                    
+                    $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
+                    
+                    // Add any remaining text
+                    if ($end < strlen($expr)) {
+                        $remainingText = substr($expr, $end);
+                        if (trim($remainingText) !== '') {
+                            $components[] = new Expression($remainingText);
+                        }
+                    }
+                    
+                    // Set components and return early for EXISTS
+                    if (count($components) > 0) {
+                        $condition->components = $components;
+                    }
+                    return;
                 }
-                
-                // Find the matching closing parenthesis
-                $depth = 0;
-                $end = $pos;
-                
-                for ($i = $pos; $i < strlen($expr); $i++) {
-                    if ($expr[$i] === '(') $depth++;
-                    if ($expr[$i] === ')') $depth--;
-                    if ($depth === 0) {
-                        $end = $i + 1;
-                        break;
+            } elseif (strlen($expr) > 0 && $expr[0] === '(' && $expr[strlen($expr) - 1] === ')') {
+                // Check if entire expression is a single subquery
+                $selectPos = strpos($exprUpper, 'SELECT');
+                if ($selectPos !== false) {
+                    // Parse entire expression as subquery
+                    $lexer = new \PhpMyAdmin\SqlParser\Lexer($expr);
+                    $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
+                    $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
+                    
+                    if ($subquery) {
+                        $components[] = new Expression('');
+                        $components[] = $subquery;
+                        $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
+                        $condition->components = $components;
+                        return;
                     }
                 }
-                
-                // Extract and parse the subquery
-                $subquerySql = substr($expr, $pos, $end - $pos);
-                $lexer = new \PhpMyAdmin\SqlParser\Lexer($subquerySql);
-                $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
-                
-                $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
-                
-                if ($subquery) {
-                    $components[] = $subquery;
-                } else {
-                    // If parsing fails, keep as text
-                    $components[] = new Expression($subquerySql);
+            } else {
+                // Find standard (SELECT ...) patterns case-insensitively
+                $pos = stripos($expr, '(SELECT', $lastPos);
+                while ($pos !== false) {
+                    // Add text before the subquery as an Expression component
+                    if ($pos > $lastPos) {
+                        $beforeText = substr($expr, $lastPos, $pos - $lastPos);
+                        $components[] = new Expression($beforeText);
+                    }
+                    
+                    // Find the matching closing parenthesis
+                    $depth = 0;
+                    $end = $pos;
+                    
+                    for ($i = $pos; $i < strlen($expr); $i++) {
+                        if ($expr[$i] === '(') $depth++;
+                        if ($expr[$i] === ')') $depth--;
+                        if ($depth === 0) {
+                            $end = $i + 1;
+                            break;
+                        }
+                    }
+                    
+                    // Extract and parse the subquery
+                    $subquerySql = substr($expr, $pos, $end - $pos);
+                    $lexer = new \PhpMyAdmin\SqlParser\Lexer($subquerySql);
+                    $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
+                    
+                    $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
+                    
+                    if ($subquery) {
+                        $components[] = $subquery;
+                    } else {
+                        // If parsing fails, keep as text
+                        $components[] = new Expression($subquerySql);
+                    }
+                    
+                    // Copy any errors from subquery parser
+                    $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
+                    
+                    // Move to next potential subquery
+                    $lastPos = $end;
+                    $pos = stripos($expr, '(SELECT', $lastPos);
                 }
-                
-                // Copy any errors from subquery parser
-                $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
-                
-                // Move to next potential subquery
-                $lastPos = $end;
-                $pos = strpos($expr, '(SELECT', $lastPos);
             }
             
             // Add any remaining text
             if ($lastPos < strlen($expr)) {
                 $remainingText = substr($expr, $lastPos);
-                $components[] = new Expression($remainingText);
+                if (trim($remainingText) !== '') {
+                    $components[] = new Expression($remainingText);
+                }
             }
             
             // Store the components if we found any subqueries
-            if (count($components) > 1) { // More than one component means we found subqueries
+            if (count($components) > 0) { // Any components means we found subqueries
                 $condition->components = $components;
             }
         }

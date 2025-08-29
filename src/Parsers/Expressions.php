@@ -380,6 +380,34 @@ class Expressions implements Parseable
     private static function parseSubqueryInExpression(Parser $parser, Expression $expression): void
     {
         $expr = $expression->expr;
+        $exprUpper = strtoupper($expr);
+        
+        // Check if this is an EXISTS subquery
+        if (strpos($exprUpper, 'EXISTS') === 0) {
+            // Find the opening parenthesis after EXISTS
+            $parenPos = strpos($expr, '(');
+            if ($parenPos !== false) {
+                // Extract the subquery part starting from EXISTS
+                try {
+                    $lexer = new \PhpMyAdmin\SqlParser\Lexer($expr);
+                    $subqueryParser = new \PhpMyAdmin\SqlParser\Parser('', false);
+                    
+                    $subquery = \PhpMyAdmin\SqlParser\Parsers\SubqueryExpressions::parse($subqueryParser, $lexer->list);
+                    
+                    if ($subquery && $subquery->statement) {
+                        // Successfully parsed as EXISTS subquery
+                        $expression->subqueryExpression = $subquery;
+                        $expression->expr = ''; // Clear the string representation
+                        
+                        // Copy any errors from subquery parser
+                        $parser->errors = array_merge($parser->errors, $subqueryParser->errors);
+                        return;
+                    }
+                } catch (\Exception $e) {
+                    // If subquery parsing fails, leave as string expression
+                }
+            }
+        }
         
         // Check if the entire expression is a single subquery: starts with ( and ends with )
         // AND the parentheses are balanced for the entire expression (not multiple subqueries)
@@ -410,9 +438,9 @@ class Expressions implements Parseable
             }
         }
         
-        // Handle complex expressions with multiple subqueries
+        // Handle complex expressions with multiple subqueries or EXISTS patterns
         // Only do this if the expression is not a single subquery wrapped in parentheses
-        if (strpos(strtoupper($expr), '(SELECT') !== false) {
+        if (strpos($exprUpper, '(SELECT') !== false || strpos($exprUpper, 'EXISTS') !== false) {
             // First check if this might be a problematic case where we have nested structures
             // Skip complex parsing for expressions that should be handled as single subqueries
             
